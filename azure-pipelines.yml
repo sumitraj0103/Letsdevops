@@ -1,0 +1,51 @@
+parameters:
+
+- name: User
+  displayName: 'UserID like: letsdevops@info.net'
+  type: string
+
+- name: Password
+  displayName: 'Password'
+  type: string
+
+- name: SelfSignCertificateName
+  displayName: 'SelfSignCertificateName'
+  type: string
+
+trigger: none
+
+pool:
+  custom-agent
+
+steps:
+- task: PowerShell@2
+  displayName: "CredEncryption"
+  inputs:
+    targetType: 'inline'
+    script: |
+      #Encrypting the password using SelfSigned Certificate
+      $value=dir cert: -Recurse | Where-Object { $_.Subject -like "*${{parameters.SelfSignCertificateName}}*" } 
+      if($value.Count -eq 0){
+        write-host "Creating Self Signed Certificate"
+        New-SelfSignedCertificate -DnsName ${{parameters.SelfSignCertificateName}} -CertStoreLocation "Cert:\CurrentUser\My" -KeyUsage KeyEncipherment,DataEncipherment,KeyAgreement -Type DocumentEncryptionCert
+      }
+      else{
+
+         write-host "Certificate Already exist"
+      }
+      Write-Host "Encrypting the Password"
+      $Secure_String_Pwd = '${{ parameters.Password }}' | ConvertTo-SecureString -AsPlainText -Force
+      write-host "Encrypting the Password"
+      $pass = $Secure_String_Pwd | ConvertFrom-SecureString | Protect-CmsMessage -To cn=${{parameters.SelfSignCertificateName}}
+      $obj = New-Object -TypeName psobject
+      $obj | Add-Member -MemberType NoteProperty -Name Password -Value $pass
+      $obj | Add-Member -MemberType NoteProperty -Name UserName -Value "${{ parameters.User }}"
+      if(!(Test-Path -path "C:\CredentialEncryption")){
+         New-item -path C:\CredentialEncryption -ItemType Directory
+         New-item -path C:\CredentialEncryption\credentials.txt -ItemType File
+      }
+      #EncryptedPassword Location
+      $obj | Export-Csv -Path "C:\CredentialEncryption\credentials.txt"
+      #Connect and Check if able to login
+
+
