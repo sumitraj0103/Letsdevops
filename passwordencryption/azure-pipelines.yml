@@ -33,7 +33,6 @@ steps:
 
          write-host "Certificate Already exist"
       }
-      Write-Host "Encrypting the Password"
       $Secure_String_Pwd = '${{ parameters.Password }}' | ConvertTo-SecureString -AsPlainText -Force
       write-host "Encrypting the Password"
       $pass = $Secure_String_Pwd | ConvertFrom-SecureString | Protect-CmsMessage -To cn=${{parameters.SelfSignCertificateName}}
