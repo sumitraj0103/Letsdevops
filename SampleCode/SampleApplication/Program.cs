@@ -22,5 +22,6 @@ namespace SampleApplication
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+               //
     }
 }
