@@ -1,0 +1,56 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Workflow-1
+
+# Controls when the workflow will run
+on:
+  workflow_dispatch:
+    inputs: 
+      workflow2_name:
+        description: 'Workflow2 Name for Triggering'
+        required: true
+        default: 'workflow2'
+      
+      workflow2_github_account:
+        description: 'GitHub Account Owner'
+        required: true
+        default: 'sumitraj0103'
+      
+      workflow2_repo_github:
+        description: 'GitHub Repository Name'
+        required: true
+        default: 'Letsdevops'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    env: 
+      pat_token: ${{ secrets.Workflow2_PAT_TOKEN_GITHUB }}
+      payload_Baseline_Number: "BSL_001"
+      payload_Baseline_Revision: "zsfdgsdbgngffdwdx1dxvv2"
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      - name: setup python
+        uses: actions/setup-python@v2
+        with:
+         python-version: 3.8 #install the python needed
+         
+      - name: Install dependencies
+        run: |
+           cd "$GITHUB_WORKSPACE/Deployment-Scripts/"
+           python -m pip install --upgrade pip
+           pip install -r requirements.txt
+          
+      - name: Trigger the Workflow
+        run: |
+         cd "$GITHUB_WORKSPACE/Deployment-Scripts/"
+         python3 $GITHUB_WORKSPACE/Deployment-Scripts/workflow_trigger.py ${{ env.Workflow2_PAT_TOKEN_GITHUB }}  ${{ github.event.inputs.workflow2_github_account}}  ${{ github.event.inputs.workflow2_repo_github}} ${{ github.event.inputs.workflow2_name}} ${{ env.payload_Baseline_Number }} ${{ env.payload_Baseline_Revision }}
+    
