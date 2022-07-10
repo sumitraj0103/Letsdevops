@@ -1,8 +1,3 @@
-import openpyxl
-import os
-import requests
-import sys
-#pip install --upgrade pandas 
 import os
 import requests
 import sys
