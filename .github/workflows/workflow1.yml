@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Workflow-1
+name: Workflow1
 
 # Controls when the workflow will run
 on:
@@ -9,7 +9,7 @@ on:
       workflow2_name:
         description: 'Workflow2 Name for Triggering'
         required: true
-        default: 'workflow2'
+        default: 'Workflow2'
       
       workflow2_github_account:
         description: 'GitHub Account Owner'
