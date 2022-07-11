@@ -38,13 +38,11 @@ jobs:
           login-server: ${{ secrets.ACR_SERVER }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
+      # Build the Docker Image
       - run: |
           docker build ${{ github.workspace }}/${{ github.event.inputs.DockerPath }}/ -t ${{ secrets.ACR_SERVER }}/${{ github.event.inputs.ImageName }}:${{ github.event.inputs.ImageVersion }}
-      
-      - uses: Azure/container-scan@v0
-        with:
-          image-name: ${{ secrets.ACR_SERVER }}/${{ github.event.inputs.ImageName }}:${{ github.event.inputs.ImageVersion }}
-          
+     
+     # Scan the Image
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         continue-on-error: false
@@ -57,6 +55,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v1
         with:
          sarif_file: 'trivy-results.sarif'
-   
+         
+      # Publish the Docker Image to ACR
       - run: |
           docker push ${{ secrets.ACR_SERVER }}/${{ github.event.inputs.ImageName }}:${{ github.event.inputs.ImageVersion }}
