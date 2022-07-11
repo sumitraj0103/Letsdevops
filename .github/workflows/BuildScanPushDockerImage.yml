@@ -16,7 +16,7 @@ on:
       ImageName:
         description: 'Name of the Image'
         required: true
-        default: 'DemoImage'
+        default: 'demoimage'
       DockerPath:
         description: 'Provide the Docker Pathj Relative to Git'
         required: true
