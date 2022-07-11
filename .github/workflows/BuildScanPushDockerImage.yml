@@ -48,7 +48,7 @@ jobs:
         id: container-scan
         continue-on-error: false
         with:
-         image-name: ${{ secrets.ACR_SERVER }}/${{ github.event.inputs.ImageName }}:${{ github.event.inputs.ImageVersion }}
+         image-name: ${{ secrets.ACR_SERVER }}/${{ github.event.inputs.ImageName }}
 
       - run: |
           docker push ${{ secrets.ACR_SERVER }}/${{ github.event.inputs.ImageName }}:${{ github.event.inputs.ImageVersion }}
