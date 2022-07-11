@@ -12,7 +12,7 @@ on:
       ImageVersion:
         description: 'Provide the Image Version to Build'
         required: true
-        default: '0.1'
+        default: '2.0'
       ImageName:
         description: 'Name of the Image'
         required: true
