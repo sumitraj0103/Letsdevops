@@ -43,12 +43,12 @@ jobs:
       - run: |
           docker build ${{ github.workspace }}/${{ github.event.inputs.DockerPath }}/ -t ${{ secrets.ACR_SERVER }}/${{ github.event.inputs.ImageName }}:${{ github.event.inputs.ImageVersion }}
 
-      - uses: Azure/container-scan@v0 
-        name: Scan image for vulnerabilities
-        id: container-scan
-        continue-on-error: false
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
         with:
-         image-name: ${{ secrets.ACR_SERVER }}/${{ github.event.inputs.ImageName }}
+         image-ref: ${{ secrets.ACR_SERVER }}/${{ github.event.inputs.ImageName }}:${{ github.event.inputs.ImageVersion }}
+         format: 'sarif'
+         output: 'trivy-results.sarif'
 
       - run: |
           docker push ${{ secrets.ACR_SERVER }}/${{ github.event.inputs.ImageName }}:${{ github.event.inputs.ImageVersion }}
