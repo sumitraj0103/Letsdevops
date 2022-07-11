@@ -1,0 +1,29 @@
+FROM ubuntu:20.04
+
+RUN apt-get update && apt-get install -y openssh-server libcurl3-gnutls
+RUN wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb && dpkg -i packages-microsoft-prod.deb \
+&& apt-get update -y &&  apt-get install --no-install-recommends -y blobfuse
+RUN mkdir /var/run/sshd
+# Password & Authentication
+RUN echo 'root:1de3a2b7c5874e7a69b4!' | chpasswd
+RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+# SSH & Keeping Session Alive 
+RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+
+ENV NOTVISIBLE "in users profile"
+RUN echo "export VISIBLE=now" >> /etc/profile
+
+EXPOSE 22
+CMD ["/usr/sbin/sshd" "-D"]
+
+RUN mkdir /inbnd
+RUN chmod 777 /inbnd
+RUN useradd -rm -d /home/ubuntu -s /bin/bash -g root -G sudo -u 1000 test 
+RUN  echo 'test:t3St@2922' | chpasswd
+RUN service ssh start
+RUN groupadd -g 1001 sftpuser
+RUN useradd -rm -d /home/sftpuser01 -s /bin/bash -g sftpuser -u 1001 sftpuser01 
+RUN useradd -rm -d /home/sftpuser02 -s /bin/bash -g sftpuser -u 1002 sftpuser02
+RUN useradd -rm -d /home/sftpuser03 -s /bin/bash -g sftpuser -u 1003 sftpuser03 
+ENTRYPOINT "/home/svc.sh" && /bin/bash
