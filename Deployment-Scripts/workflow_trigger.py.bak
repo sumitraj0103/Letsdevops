@@ -1,13 +1,23 @@
+<<<<<<< HEAD
+
+=======
+>>>>>>> 4f80d340bbe3411c72a0a5ec27a066765f1d185d
 import os
 import requests
 import sys
 
-TOKEN= str(sys.argv[0])
-OWNER= str(sys.argv[1])
-REPO= str(sys.argv[2])
-Workflow_Name= str(sys.argv[3])
-pl_Baseline_Number= str(sys.argv[4])
-pl_Baseline_Revision = str(sys.argv[5])
+#TOKEN= str(sys.argv[1])
+#OWNER= str(sys.argv[2])
+#REPO= str(sys.argv[3])
+#Workflow_Name= str(sys.argv[4])
+#pl_Baseline_Number= str(sys.argv[5])
+#pl_Baseline_Revision = str(sys.argv[6])
+TOKEN= "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"
+OWNER= "sumitraj0103"
+REPO= "Letsdevops"
+Workflow_Name= "Workflow2"
+pl_Baseline_Number="sdfds"
+pl_Baseline_Revision = "ffz"
 
 def trigger_workflow(Workflow_Name,pl_Baseline_Number,pl_Baseline_Revision):
 
