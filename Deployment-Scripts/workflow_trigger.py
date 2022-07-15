@@ -1,14 +1,22 @@
+
 import os
 import requests
 import sys
 
-TOKEN= str(sys.argv[0])
-OWNER= str(sys.argv[1])
-REPO= str(sys.argv[2])
-Workflow_Name= str(sys.argv[3])
-pl_Baseline_Number= str(sys.argv[4])
-pl_Baseline_Revision = str(sys.argv[5])
+# TOKEN= str(sys.argv[1])
+# OWNER= str(sys.argv[2])
+# REPO= str(sys.argv[3])
+# Workflow_Name= str(sys.argv[4])
+# pl_Baseline_Number= str(sys.argv[5])
+# pl_Baseline_Revision = str(sys.argv[6])
+TOKEN= "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"
+OWNER= "sumitraj0103"
+REPO= "Letsdevops"
+Workflow_Name= "Workflow2"
+pl_Baseline_Number="sdfds"
+pl_Baseline_Revision = "ffz"
 
+print( "the toke value is")
 def trigger_workflow(Workflow_Name,pl_Baseline_Number,pl_Baseline_Revision):
 
       headers = {
@@ -24,10 +32,8 @@ def trigger_workflow(Workflow_Name,pl_Baseline_Number,pl_Baseline_Revision):
         }
       }
 
-      requests.post(
-        f"https://api.github.com/repos/{OWNER}/{REPO}/dispatches",
-        json=data,
-        headers=headers
-      )
+      responseValue=requests.post(f"https://api.github.com/repos/{OWNER}/{REPO}/dispatches",json=data,headers=headers)
+      print(responseValue.content)
+
 
 trigger_workflow(Workflow_Name,pl_Baseline_Number,pl_Baseline_Revision)

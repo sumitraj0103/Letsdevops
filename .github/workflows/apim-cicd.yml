@@ -1,0 +1,323 @@
+name: DATAX-NPR-APIM
+
+# Manual trigger with parameters
+on:
+  workflow_dispatch:
+    inputs:
+      # Name of your Source Cosmos DB
+#       ENVIRONMENT:
+#         description: 'Deployment Environment (npr/prp/prd)'
+#         required: true
+#         default: 'npr'
+        
+      ARMtemplate_Path:
+        description: 'ARM template Json file to create apis/Collection. Path Relative tO GITHUB'
+        required: true
+        default: '/APIM/arm-template/'
+        
+#       APIM_NAME:
+#         description: 'APIM Name'
+#         required: true
+#         default: 'dxseaapim003prp'
+        
+#       APIM_RG:
+#         description: 'APIM Resource Group'
+#         required: true
+#         default: 'dxseaapim003prp'
+        
+#       KEYVAULT:
+#         description: 'Keyvault Name'
+#         required: true
+#         default: ''
+            
+      apis_list:
+        description: 'List of APIs to Deploy--> , separated'
+        required: true
+        default: 'cardx-datax-cardxlos-autouwrt-cust-dly,cardx-datax-cardxlos-autouwrt-dpst-dly'
+        
+      INPUT_TAG:
+        description: 'Tag/Baseline Number'
+        required: true
+        default: 'DATAX_BSL_0001'
+      
+      INPUT_COMMITID:
+        description: 'Revision Number'
+        required: true
+        default: 'e1fd27b5d93f4f3d4b34050fe317bcc5935bd7bc'
+
+jobs:
+  #############################################################
+  # This is packaging up the files from Git to the Artifacts files
+  #############################################################
+  Build:
+    runs-on: [ self-hosted-dev ]
+    env:
+      input_commitid: '${{ github.event.inputs.INPUT_COMMITID }}'
+
+    # Checkout code
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+      with:
+        ref: '${{ env.input_commitid }}'
+
+    # Publish Artifact: Publish: Deployment-Scripts
+    - name: 'Publish Artifact: APIM SYNC' 
+      uses: actions/upload-artifact@v2
+      env:
+          NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt 
+      with:
+        name: 'deployment-scripts'
+        path: '${{ github.workspace }}/Deployment-Scripts/APIM-Sync/'
+        
+    # Optional: Add step to run tests here
+    - name: Update Properties on Non-Production Environment
+      run: |
+        cd "$GITHUB_WORKSPACE/APIM/arm-template/"
+        python3 $GITHUB_WORKSPACE/Deployment-Scripts/AzureDataFactory/python/properties-update.py \
+          '${{ github.workspace }}/APIM/npr-app-config.properties' \
+          '${{ github.workspace }}/APIM/arm-template/'
+    
+#     - name: Update Properties on Pre-Production Environment
+#       if: ${{ github.event.inputs.ENVIRONMENT == 'prp' }}
+#       run: |
+#         cd "$GITHUB_WORKSPACE/APIM/arm-template/"
+#         python3 $GITHUB_WORKSPACE/Deployment-Scripts/AzureDataFactory/python/properties-update.py \
+#           '${{ github.workspace }}/APIM/prp-app-config.properties' \
+#           '${{ github.workspace }}/APIM/arm-template/'
+         
+#     - name: Update Properties on Production Environment
+#       if: ${{ github.event.inputs.ENVIRONMENT == 'prd' }}
+#       run: |
+#         cd "$GITHUB_WORKSPACE/APIM/arm-template/"
+#         python3 $GITHUB_WORKSPACE/Deployment-Scripts/AzureDataFactory/python/properties-update.py \
+#           '${{ github.workspace }}/APIM/prd-app-config.properties' \
+#           '${{ github.workspace }}/APIM/arm-template/'
+          
+    # Publish Artifact: Publish: Template JSON
+    - name: 'Publish Artifact: Template JSON' 
+      uses: actions/upload-artifact@v2
+      env:
+          NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt
+      with:
+        name: 'template-file'
+        path: '${{ github.workspace }}/${{ github.event.inputs.ARMtemplate_Path }}'
+    
+        
+#############################################################
+# Deploy 
+#############################################################
+  Dev:
+    needs: Build
+    runs-on: [ self-hosted-dev ]
+    env:
+       TargetAPIM_NAME: 'dxseaapim003npr'
+       TargetAPIM_RG: 'RG-SEA-DATAX-NPR-DP-01' 
+       keyVaultName: 'KEY-RG-SEA-CTRL-DX-NPR'
+       NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt
+        
+    steps:
+    - name: Checkout on shared marketplace repo
+      uses: actions/checkout@v2
+      with:
+          repository: 'Share-Module/market-place-module'
+          token: ${{ secrets.PAT_ACCESS_NPR }}
+  
+    # Login to Azure
+    - name: Login via Az module
+      uses: ./azure-login
+      with:
+        creds: | 
+          ${{ secrets.DATAX_SP_NPR }}
+          
+    # Download secret from KeyVault Secrets
+    - name: Download publish profile from KeyVault Secrets
+      uses: ./keyvault-module
+      with:
+        keyvault: ${{ env.keyVaultName }}
+        secrets: 'dxardevopsfrmwk-appid,dxardevopsfrmwk-secretkey,dxardevopsfrmwk-tenantid,dxardevopsfrmwk-subscriptionid'
+      id: APIMSecretAction
+      
+    # Download Artifact: deployment-scripts
+    - name: 'Download Artifact: ARM-Templates' 
+      uses: actions/download-artifact@v2
+      env:
+          NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt  
+      with:
+        name: 'deployment-scripts'
+        path: ${{ github.workspace }}/Deployment-Scripts/APIM-Sync/
+
+    # Publish Artifact: Publish: Template JSON
+    - name: 'Publish Artifact: Template JSON' 
+      uses: actions/download-artifact@v2
+      env:
+          NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt  
+      with:
+        name: 'template-file'
+        path: '${{ github.workspace }}/${{ github.event.inputs.ARMtemplate_Path }}'
+        
+    - name: Install dependencies
+      run: |
+        cd "$GITHUB_WORKSPACE/Deployment-Scripts/APIM-Sync/"
+        python3 -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Deploy Template
+      run: |
+       chmod +x $GITHUB_WORKSPACE/Deployment-Scripts/APIM-Sync/template-deploy-api-Management.py
+       python3 $GITHUB_WORKSPACE/Deployment-Scripts/APIM-Sync/template-deploy-api-Management.py
+      env:
+        ARMtemplate_Path: '${{ github.workspace }}/${{ github.event.inputs.ARMtemplate_Path }}'
+        TargetAPIM_NAME: ${{ env.TargetAPIM_NAME }}
+        TargetAPIM_RG: ${{ env.TargetAPIM_RG }}
+        CLIENT_SECRET: ${{ steps.APIMSecretAction.outputs.dxardevopsfrmwk-secretkey }}
+        CLIENT_ID: ${{ steps.APIMSecretAction.outputs.dxardevopsfrmwk-appid }}
+        TENANT_ID: ${{ steps.APIMSecretAction.outputs.dxardevopsfrmwk-tenantid }}
+        SUBSCRIPTION_ID: ${{ steps.APIMSecretAction.outputs.dxardevopsfrmwk-subscriptionid }}
+        apis_list: ${{ github.event.inputs.apis_list }}
+
+# #############################################################
+# # Deploy to PRP
+# #############################################################
+#   PRP:
+#     if: ${{ github.event.inputs.ENVIRONMENT == 'prp' }}
+#     needs: Build
+#     runs-on: [ self-hosted-dev ]
+#     env:
+#        TargetAPIM_NAME: 'dxseaapim001prp'
+#        TargetAPIM_RG: 'RG-SEA-DATAX-PRP-DP-01' 
+#        keyVaultName: 'KEY-RG-SEA-CTRL-DX-PRP'
+#        NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt    
+    
+#     steps:
+    
+#     - name: Checkout on shared marketplace repo
+#       uses: actions/checkout@v2
+#       with:
+#           repository: 'Share-Module/market-place-module'
+#           token: ${{ secrets.PAT_ACCESS_MARKET_PLACE_MODULE }}
+#     # Login to Azure
+#     - name: Login via Az module
+#       uses: ./azure-login
+#       with:
+#         creds: | 
+#           ${{ secrets.DATAX_SP_PRP }}
+#     # Download secret from KeyVault Secrets
+#     - name: Download publish profile from KeyVault Secrets
+#       uses: ./keyvault-module
+#       with:
+#         keyvault: ${{ env.keyVaultName }}
+#         secrets: 'dxardevopsfrmwk-appid,dxardevopsfrmwk-secretkey,dxardevopsfrmwk-tenantid,dxardevopsfrmwk-subscriptionid'
+#       id: APIMSecretAction
+      
+#     # Download Artifact: deployment-scripts
+#     - name: 'Download Artifact: ARM-Templates' 
+#       uses: actions/download-artifact@v2
+#       env:
+#           NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt  
+#       with:
+#         name: 'deployment-scripts'
+#         path: ${{ github.workspace }}/Deployment-Scripts/APIM-Sync/
+
+#     # Publish Artifact: Publish: Template JSON
+#     - name: 'Publish Artifact: Template JSON' 
+#       uses: actions/download-artifact@v2
+#       env:
+#           NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt  
+#       with:
+#         name: 'template-file'
+#         path: '${{ github.workspace }}/${{ github.event.inputs.ARMtemplate_Path }}'
+        
+#     - name: Install dependencies
+#       run: |
+#         cd "$GITHUB_WORKSPACE/Deployment-Scripts/APIM-Sync/"
+#         python3 -m pip install --upgrade pip
+#         pip install -r requirements.txt
+        
+#     - name: Deploy Template
+#       run: |
+#        chmod +x $GITHUB_WORKSPACE/Deployment-Scripts/APIM-Sync/template-deploy-api-Management.py
+#        python3 $GITHUB_WORKSPACE/Deployment-Scripts/APIM-Sync/template-deploy-api-Management.py
+#       env:
+#         ARMtemplate_Path: '${{ github.workspace }}/${{ github.event.inputs.ARMtemplate_Path }}'
+#         TargetAPIM_NAME: ${{ env.TargetAPIM_NAME }}
+#         TargetAPIM_RG: ${{ env.TargetAPIM_RG }}
+#         CLIENT_SECRET: ${{ steps.APIMSecretAction.outputs.dxardevopsfrmwk-secretkey }}
+#         CLIENT_ID: ${{ steps.APIMSecretAction.outputs.dxardevopsfrmwk-appid }}
+#         TENANT_ID: ${{ steps.APIMSecretAction.outputs.dxardevopsfrmwk-tenantid }}
+#         SUBSCRIPTION_ID: ${{ steps.APIMSecretAction.outputs.dxardevopsfrmwk-subscriptionid }}
+#         apis_list: ${{ github.event.inputs.apis_list }}
+
+
+#   #############################################################
+# # Deploy to PRD
+# #############################################################
+#   PRD:
+#     if: ${{ github.event.inputs.ENRIVONMENT == 'prd' }}
+#     needs: Build
+#     runs-on: [ self-hosted-prd ]
+#     env:
+#        TargetAPIM_NAME: 'dxseaapim001prd'
+#        TargetAPIM_RG: 'RG-SEA-DATAX-PRD-DP-01'
+#        keyVaultName: 'KEY-RG-SEA-CTRL-DX-PRD'
+#        NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt
+     
+#     steps:
+    
+#     - name: Checkout on shared marketplace repo
+#       uses: actions/checkout@v2
+#       with:
+#           repository: 'Share-Module/market-place-module'
+#           token: ${{ secrets.PAT_ACCESS_MARKET_PLACE_MODULE }}
+      
+#     # Login to Azure
+#     - name: Login via Az module
+#       uses: ./azure-login
+#       with:
+#         creds: | 
+#           ${{ secrets.DATAX_SP_PRD }}
+#     # Download secret from KeyVault Secrets
+#     - name: Download publish profile from KeyVault Secrets
+#       uses: ./keyvault-module
+#       with:
+#         keyvault: ${{ env.keyVaultName }}
+#         secrets: 'dxardevopsfrmwk-appid,dxardevopsfrmwk-secretkey,dxardevopsfrmwk-tenantid,dxardevopsfrmwk-subscriptionid'
+#       id: APIMSecretAction
+      
+#     # Download Artifact: deployment-scripts
+#     - name: 'Download Artifact: ARM-Templates' 
+#       uses: actions/download-artifact@v2
+#       env:
+#           NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt  
+#       with:
+#         name: 'deployment-scripts'
+#         path: ${{ github.workspace }}/Deployment-Scripts/APIM-Sync/
+
+#     # Publish Artifact: Publish: Template JSON
+#     - name: 'Publish Artifact: Template JSON' 
+#       uses: actions/download-artifact@v2
+#       env:
+#           NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt  
+#       with:
+#         name: 'template-file'
+#         path: '${{ github.workspace }}/${{ github.event.inputs.ARMtemplate_Path }}'
+        
+#     - name: Install dependencies
+#       run: |
+#         cd "$GITHUB_WORKSPACE/Deployment-Scripts/APIM-Sync/"
+#         python3 -m pip install --upgrade pip
+#         pip install -r requirements.txt
+        
+#     - name: Deploy Template
+#       run: |
+#        chmod +x $GITHUB_WORKSPACE/Deployment-Scripts/APIM-Sync/template-deploy-api-Management.py
+#        python3 $GITHUB_WORKSPACE/Deployment-Scripts/APIM-Sync/template-deploy-api-Management.py
+#       env:
+#         ARMtemplate_Path: '${{ github.workspace }}/${{ github.event.inputs.ARMtemplate_Path }}'
+#         TargetAPIM_NAME: ${{ env.TargetAPIM_NAME }}
+#         TargetAPIM_RG: ${{ env.TargetAPIM_RG }}
+#         CLIENT_SECRET: ${{ steps.APIMSecretAction.outputs.dxardevopsfrmwk-secretkey }}
+#         CLIENT_ID: ${{ steps.APIMSecretAction.outputs.dxardevopsfrmwk-appid }}
+#         TENANT_ID: ${{ steps.APIMSecretAction.outputs.dxardevopsfrmwk-tenantid }}
+#         SUBSCRIPTION_ID: ${{ steps.APIMSecretAction.outputs.dxardevopsfrmwk-subscriptionid }}
+#         apis_list: ${{ github.event.inputs.apis_list }}
