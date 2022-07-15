@@ -39,16 +39,11 @@ on:
         description: 'List of APIs to Deploy--> , separated'
         required: true
         default: 'cardx-datax-cardxlos-autouwrt-dpst-dly'
-        
-      INPUT_TAG:
-        description: 'Tag/Baseline Number'
-        required: true
-        default: 'DATAX_BSL_0001'
       
       INPUT_COMMITID:
         description: 'Revision Number'
         required: true
-        default: 'e1fd27b5d93f4f3d4b34050fe317bcc5935bd7bc'
+        default: 'a96c5283f80aa62dcca84c3421adb73d3fddeced'
 
 jobs:
   #############################################################
