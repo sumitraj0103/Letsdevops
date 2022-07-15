@@ -73,7 +73,7 @@ jobs:
       if: ${{ github.event.inputs.ENVIRONMENT == 'npr' }}
       run: |
         cd "$GITHUB_WORKSPACE/APIM/arm-template/"
-        python3 $GITHUB_WORKSPACE/Deployment-Scripts/AzureDataFactory/python/properties-update.py \
+        python3 $GITHUB_WORKSPACE/Deployment-Scripts/Update-Properties/properties-update.py \
           '${{ github.workspace }}/APIM/npr-app-config.properties' \
           '${{ github.workspace }}/APIM/arm-template/'
     
@@ -81,7 +81,7 @@ jobs:
       if: ${{ github.event.inputs.ENVIRONMENT == 'prp' }}
       run: |
         cd "$GITHUB_WORKSPACE/APIM/arm-template/"
-        python3 $GITHUB_WORKSPACE/Deployment-Scripts/AzureDataFactory/python/properties-update.py \
+        python3 $GITHUB_WORKSPACE/Deployment-Scripts/Update-Properties/properties-update.py \
           '${{ github.workspace }}/APIM/prp-app-config.properties' \
           '${{ github.workspace }}/APIM/arm-template/'
          
@@ -89,7 +89,7 @@ jobs:
       if: ${{ github.event.inputs.ENVIRONMENT == 'prd' }}
       run: |
         cd "$GITHUB_WORKSPACE/APIM/arm-template/"
-        python3 $GITHUB_WORKSPACE/Deployment-Scripts/AzureDataFactory/python/properties-update.py \
+        python3 $GITHUB_WORKSPACE/Deployment-Scripts/Update-Properties/properties-update.py \
           '${{ github.workspace }}/APIM/prd-app-config.properties' \
           '${{ github.workspace }}/APIM/arm-template/'
           
