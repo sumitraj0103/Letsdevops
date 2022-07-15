@@ -16,8 +16,10 @@ apim_service=os.environ.get("TargetAPIM_NAME")
 #resourceGroup= "devops-apim-test"
 Template_path=os.environ.get("ARMtemplate_Path")
 apis_list=os.environ.get("apis_list")
+apis_delete_list=os.environ.get("apis_delete_list")
 
 result_api=apis_list.split(",")
+result_apis_delete_list=apis_delete_list(",")
 print("The result API is : ", result_api)
 # Change to True for Deploy else set False
 deploy_apis=True
@@ -70,6 +72,19 @@ def create_apis(properties_value,apiName):
     if response.status_code == 400:    
         raise Exception("API Failed, Result: {}".format(response.json()))    
         response.raise_for_status()
+def delete_apis(apiName):
+    target_api_url="https://management.azure.com/subscriptions/"+subscription_id+"/resourcegroups/"+resourceGroup+"/providers/Microsoft.ApiManagement/service/"+apim_service+"/apis/"+apiName+"?api-version=2020-12-01"
+    headers = {'Authorization': 'Bearer {}'.format(DF_MANAGEMENT_TOKEN)}
+    
+    response = requests.delete(
+        target_api_url,
+        headers=headers
+    )
+    #Validate response code
+    print("the response code is",response.status_code)
+    if response.status_code == 400:    
+        raise Exception("API Failed, Result: {}".format(response.json()))    
+        response.raise_for_status()
 
 def create_operations(collproperties,opapiname,operationname):
     target_api_url="https://management.azure.com/subscriptions/"+subscription_id+"/resourcegroups/"+resourceGroup+"/providers/Microsoft.ApiManagement/service/"+apim_service+"/apis/"+opapiname+"/operations/"+operationname+"?api-version=2021-08-01"
@@ -90,7 +105,21 @@ def create_operations(collproperties,opapiname,operationname):
     if response.status_code == 400:    
         raise Exception("API Failed, Result: {}".format(response.json()))    
         response.raise_for_status()
-    
+ 
+def delete_operations(collproperties,opapiname,operationname):
+    target_api_url="https://management.azure.com/subscriptions/"+subscription_id+"/resourcegroups/"+resourceGroup+"/providers/Microsoft.ApiManagement/service/"+apim_service+"/apis/"+opapiname+"/operations/"+operationname+"?api-version=2020-12-01"
+    headers = {'Authorization': 'Bearer {}'.format(DF_MANAGEMENT_TOKEN)}
+    #target_api_url="https://management.azure.com/subscriptions/"+target_subscription_id+"/resourcegroups/"+target_resourceGroup+"/providers/Microsoft.ApiManagement/service/"+Target_servie_Name+"/apis/"+opapiname+"/operations/"+operationname+"?api-version=2021-08-01"
+    response = requests.delete(
+        target_api_url,
+        headers=headers
+    )
+    #Validate response code
+    print("the response code is",response.status_code)
+    if response.status_code == 400:    
+        raise Exception("API Failed, Result: {}".format(response.json()))    
+        response.raise_for_status()
+        
 def create_policies(policyproperties,opapiname):
     target_api_url="https://management.azure.com/subscriptions/"+subscription_id+"/resourcegroups/"+resourceGroup+"/providers/Microsoft.ApiManagement/service/"+apim_service+"/apis/"+opapiname+"/policies/policy?api-version=2020-12-01"
     headers = {'Authorization': 'Bearer {}'.format(DF_MANAGEMENT_TOKEN)}
@@ -203,7 +232,10 @@ if deploy_apis == True:
                             create_apis(apis_json,api_name_value)
                         else:
                             print("We are not creating API since is it not selected to Create",api_Name)
-                        
+                        #Delete if Mentioned    
+                        if api_name_value in delete_list_apis:
+                             print("The Selcted API is ready to delete",api_Name)
+                             delete_apis(api_name_value)
 
 #Create namedValue
 if deploy_namedValues == True:
