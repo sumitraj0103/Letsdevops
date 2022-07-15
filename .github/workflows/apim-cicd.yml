@@ -1,4 +1,4 @@
-name: DATAX-NPR-APIM
+name: APIM-CherryPick-TemplateDeploy
 
 # Manual trigger with parameters
 on:
