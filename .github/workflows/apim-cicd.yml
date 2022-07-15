@@ -40,10 +40,10 @@ on:
         required: true
         default: 'cardx-datax-cardxlos-autouwrt-dpst-dly'
       
-      INPUT_COMMITID:
-        description: 'Revision Number'
-        required: true
-        default: 'adcd11f27c983cef603b75213ebd35e4fa1973cd'
+#       INPUT_COMMITID:
+#         description: 'Revision Number'
+#         required: true
+#         default: 'e35b45418dd98ce2a6a0c22032034c88e38b1bcb'
 
 jobs:
   #############################################################
@@ -58,8 +58,8 @@ jobs:
     steps:
     - name: Checkout repo
       uses: actions/checkout@v2
-      with:
-        ref: '${{ env.input_commitid }}'
+#       with:
+#         ref: '${{ env.input_commitid }}'
 
     # Publish Artifact: Publish: Deployment-Scripts
     - name: 'Publish Artifact: APIM SYNC' 
