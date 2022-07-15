@@ -67,6 +67,12 @@ jobs:
       with:
         name: 'deployment-scripts'
         path: '${{ github.workspace }}/Deployment-Scripts/APIM-Sync/'
+    
+    - name: Install dependencies
+      run: |
+        cd "$GITHUB_WORKSPACE/Deployment-Scripts/Update-Properties/"
+        python3 -m pip install --upgrade pip
+        pip install -r requirements.txt
         
     # Optional: Add step to run tests here
     - name: Update Properties on Non-Production Environment
