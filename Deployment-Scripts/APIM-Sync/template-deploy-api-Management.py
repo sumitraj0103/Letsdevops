@@ -19,7 +19,7 @@ apis_list=os.environ.get("apis_list")
 apis_delete_list=os.environ.get("apis_delete_list")
 
 result_api=apis_list.split(",")
-result_apis_delete_list=apis_delete_list(",")
+result_apis_delete_list=apis_delete_list.split(",")
 print("The result API is : ", result_api)
 # Change to True for Deploy else set False
 deploy_apis=True
