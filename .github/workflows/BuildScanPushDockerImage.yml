@@ -12,11 +12,11 @@ on:
       ImageVersion:
         description: 'Provide the Image Version to Build'
         required: true
-        default: '0.1'
+        default: '2.0'
       ImageName:
         description: 'Name of the Image'
         required: true
-        default: 'DemoImage'
+        default: 'demoimage'
       DockerPath:
         description: 'Provide the Docker Pathj Relative to Git'
         required: true
@@ -25,7 +25,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  BuildScanPush:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -33,22 +33,29 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-
       - uses: azure/docker-login@v1
         with:
           login-server: ${{ secrets.ACR_SERVER }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
-        
+      # Build the Docker Image
       - run: |
           docker build ${{ github.workspace }}/${{ github.event.inputs.DockerPath }}/ -t ${{ secrets.ACR_SERVER }}/${{ github.event.inputs.ImageName }}:${{ github.event.inputs.ImageVersion }}
-
-      - uses: Azure/container-scan@v0 
-        name: Scan image for vulnerabilities
-        id: container-scan
+     
+     # Scan the Image
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
         continue-on-error: false
         with:
-         image-name: ${{ secrets.ACR_SERVER }}/${{ github.event.inputs.ImageName }}:${{ github.event.inputs.ImageVersion }}
-
+         image-ref: ${{ secrets.ACR_SERVER }}/${{ github.event.inputs.ImageName }}:${{ github.event.inputs.ImageVersion }}
+         format: 'sarif'
+         output: 'trivy-results.sarif'
+         
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+         sarif_file: 'trivy-results.sarif'
+         
+      # Publish the Docker Image to ACR
       - run: |
           docker push ${{ secrets.ACR_SERVER }}/${{ github.event.inputs.ImageName }}:${{ github.event.inputs.ImageVersion }}
