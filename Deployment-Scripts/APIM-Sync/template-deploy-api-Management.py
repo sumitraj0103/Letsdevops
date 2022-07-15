@@ -233,7 +233,7 @@ if deploy_apis == True:
                         else:
                             print("We are not creating API since is it not selected to Create",api_Name)
                         #Delete if Mentioned    
-                        if api_name_value in delete_list_apis:
+                        if api_name_value in result_apis_delete_list:
                              print("The Selcted API is ready to delete",api_Name)
                              delete_apis(api_name_value)
 
