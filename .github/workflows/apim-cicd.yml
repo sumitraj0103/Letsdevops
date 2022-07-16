@@ -14,21 +14,6 @@ on:
         description: 'ARM template Json file to create apis/Collection. Path Relative tO GITHUB'
         required: true
         default: '/APIM/arm-template/'
-        
-#       APIM_NAME:
-#         description: 'APIM Name'
-#         required: true
-#         default: 'dxseaapim003prp'
-        
-#       APIM_RG:
-#         description: 'APIM Resource Group'
-#         required: true
-#         default: 'dxseaapim003prp'
-        
-#       KEYVAULT:
-#         description: 'Keyvault Name'
-#         required: true
-#         default: ''
             
       apis_list:
         description: 'List of APIs to Deploy--> , separated'
@@ -40,10 +25,6 @@ on:
         required: true
         default: 'cardx-datax-cardxlos-autouwrt-dpst-dly'
       
-#       INPUT_COMMITID:
-#         description: 'Revision Number'
-#         required: true
-#         default: 'e35b45418dd98ce2a6a0c22032034c88e38b1bcb'
 
 jobs:
   #############################################################
@@ -58,8 +39,6 @@ jobs:
     steps:
     - name: Checkout repo
       uses: actions/checkout@v2
-#       with:
-#         ref: '${{ env.input_commitid }}'
 
     # Publish Artifact: Publish: Deployment-Scripts
     - name: 'Publish Artifact: APIM SYNC' 
@@ -108,7 +87,7 @@ jobs:
     
         
 #############################################################
-# Deploy 
+# Deploy to Dev
 #############################################################
   Dev:
     if: ${{ github.event.inputs.Environment == 'npr' }}
