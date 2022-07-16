@@ -9,15 +9,9 @@ client_secret= os.environ.get("CLIENT_SECRET")
 subscription_id= os.environ.get("SUBSCRIPTION_ID")
 resourceGroup= os.environ.get("TargetAPIM_RG")
 apim_service=os.environ.get("TargetAPIM_NAME")
-#tenant_id= "5cfb3473-12f5-4b3e-a74f-bc849b61ba8c"
-#client_id= "b9d34698-38e3-4479-acbe-bc43002ef446"
-#client_secret= os.environ.get("TARGETAPIM_SECRET")
-#subscription_id= "2546a5d7-a653-480f-a60a-a043b9a6f7b3"
-#resourceGroup= "devops-apim-test"
 Template_path=os.environ.get("ARMtemplate_Path")
 apis_list=os.environ.get("apis_list")
 apis_delete_list=os.environ.get("apis_delete_list")
-
 result_api=apis_list.split(",")
 result_apis_delete_list=apis_delete_list.split(",")
 print("The result API is : ", result_api)
@@ -25,9 +19,9 @@ print("The result API is : ", result_api)
 deploy_apis=True
 deploy_namedValues=False
 deploy_backends=False
-deploy_operations=False
-deploy_policies=False
-deploy_ops_policies=False
+deploy_operations=True
+deploy_policies=True
+deploy_ops_policies=True
 
 TOKEN_REQ_BODY = {
     'grant_type': 'client_credentials',
