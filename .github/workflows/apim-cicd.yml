@@ -19,12 +19,6 @@ on:
         description: 'List of APIs to Deploy--> , separated'
         required: true
         default: 'cardx-datax-cardxlos-autouwrt-cust-dly,cardx-datax-cardxlos-autouwrt-dpst-dly'
-    
-      apis_delete_list:
-        description: 'List of APIs to Delete--> , separated'
-        required: true
-        default: 'cardx-datax-cardxlos-autouwrt-dpst-dly'
-      
 
 jobs:
   #############################################################
@@ -148,6 +142,5 @@ jobs:
         TENANT_ID: ${{ steps.AzureSPCred.outputs.sp-npr-tenantid }}
         SUBSCRIPTION_ID: ${{ steps.AzureSPCred.outputs.sp-npr-subscriptionid }}
         apis_list: ${{ github.event.inputs.apis_list }}
-        apis_delete_list: ${{ github.event.inputs.apis_list }}
 
 
