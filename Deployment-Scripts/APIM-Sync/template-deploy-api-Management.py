@@ -16,7 +16,7 @@ result_api=apis_list.split(",")
 print("The result API is : ", result_api)
 # Change to True for Deploy else set False
 deploy_apis=True
-deploy_namedValues=False
+deploy_namedValues=True
 deploy_backends=True
 deploy_operations=True
 deploy_policies=True
