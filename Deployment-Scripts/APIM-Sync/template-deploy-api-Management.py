@@ -202,35 +202,22 @@ if deploy_apis == True:
     for i in data:
             if i == "resources":
                 for item in data[i]:
-                    #print("The apis itme is ", item)
                     if item['type'] == 'Microsoft.ApiManagement/service/apis':
                         #print("the Database item is ",item['properties'])
                         apis_json=item['properties']
-
-                        #print("The database Name is",item['name'])
                         apis_string=item['name'].split(",")
-                        #print("Database name after split",databasenameString[1])
                         apis_laststring=apis_string[1]
                         apis_value=apis_laststring.split("/")
                         api_Name=apis_value[1].replace("')]","")
-                        #updated_apijson='{'+"'properties'"+":"+str(apis_json)+'}'
-                        #updated_apijson_load=json.loads(apis_value)
                         api_name_value=api_Name.replace("')]","")
-                        #print("The apis Json value to create apis is",apis_json)
-                        #print("The API Name is", api_name_value)
-                        #print("DatabaseName",databaseName)
-                        #print("containerName",database[2])
+                
                         print("Checking and Creating apis..",api_name_value)
-                        if api_name_value in result_api:
+                        if api_name_value in result_api or result_api=='full':
                             print("The Selcted API is ready to create",api_Name)
                             create_apis(apis_json,api_name_value)
                         else:
                             print("We are not creating API since is it not selected to Create",api_Name)
-                        #Delete if Mentioned    
-                        if api_name_value in result_apis_delete_list:
-                             print("The Selcted API is ready to delete",api_Name)
-                             delete_apis(api_name_value)
-
+                       
 #Create namedValue
 if deploy_namedValues == True:
     for i in data:
@@ -238,30 +225,17 @@ if deploy_namedValues == True:
                 for item in data[i]:
                     #print("The Operations item is", item)
                     if item['type'] == 'Microsoft.ApiManagement/service/namedValues':
-                        #print("the Collection item is ",item['properties'])
-                        #print("Operation Name is",item['name'])
                         namedValuejson=item['properties']
-                        #print("Policies Json",operationjson)
                         namedValueString=item['name'].split(",")
-                        #print("Database name after split",databasenameString[1])
                         LastString=namedValueString[1]
                         namedValue=LastString.split("/")
                         namedValue_name=namedValue[1].replace("')]","")
-                        #api_operation_name=apis[2].replace("')]","")
-
-                        #print("DatabaseName",database[1])
-                        #print(" Policy api Name",api_name)
-                        #
-                        #print("Checking and Creating Container for Database..",apis[1],apis[2])
                         updated_json_value='{'+'"properties"'+":"+json.dumps(namedValuejson)+'}'
-                        #print("Operation Name",updated_json_value)
-                        #updated_apijson_load=json.loads(updated_json_value)
-                        #print("Operation Name",updated_apijson_load)
                         json_object = json.loads(updated_json_value)
                         print("the Named Value",namedValue_name)
                         print("Backend Json Object is",json_object)
                         create_namedValue(json_object,namedValue_name)
-                        #break
+                       
 
 #Create Backend
 if deploy_backends == True:
@@ -270,30 +244,15 @@ if deploy_backends == True:
                 for item in data[i]:
                     #print("The Operations item is", item)
                     if item['type'] == 'Microsoft.ApiManagement/service/backends':
-                        #print("the Collection item is ",item['properties'])
-                        #print("Operation Name is",item['name'])
                         backendjson=item['properties']
-                        #print("Policies Json",operationjson)
                         backendString=item['name'].split(",")
-                        #print("Database name after split",databasenameString[1])
                         LastString=backendString[1]
                         backend=LastString.split("/")
                         backend_name=backend[1].replace("')]","")
-                        #api_operation_name=apis[2].replace("')]","")
-
-                        #print("DatabaseName",database[1])
-                        #print(" Policy api Name",api_name)
-                        #
-                        #print("Checking and Creating Container for Database..",apis[1],apis[2])
                         updated_json_value='{'+'"properties"'+":"+json.dumps(backendjson)+'}'
-                        #print("Operation Name",updated_json_value)
-                        #updated_apijson_load=json.loads(updated_json_value)
-                        #print("Operation Name",updated_apijson_load)
                         json_object = json.loads(updated_json_value)
-                        print("the Backend Name",backend_name)
-                        print("Backend Json Object is",json_object)
                         create_backend(json_object,backend_name)
-                        #break
+                       
 
 
 #Create Operations
@@ -313,19 +272,11 @@ if deploy_operations == True:
                         apis=LastString.split("/")
                         api_name=apis[1]
                         api_operation_name=apis[2].replace("')]","")
-
-                        #print("DatabaseName",database[1])
-                        #print("api Name",api_name)
-                        #
-                        #print("Checking and Creating Container for Database..",apis[1],apis[2])
                         updated_json_value='{'+'"properties"'+":"+json.dumps(operationjson)+'}'
-                        #print("Operation Name",updated_json_value)
-                        #updated_apijson_load=json.loads(updated_json_value)
-                        #print("Operation Name",updated_apijson_load)
                         json_object = json.loads(updated_json_value)
                         print("API Name and Operation Name",api_name,api_operation_name)
                         #print("Json Object is",json_object)
-                        if api_name in result_api:
+                        if api_name in result_api or result_api=='full':
                             create_operations(json_object,api_name,api_operation_name)
 
 #Create api policies
@@ -335,21 +286,12 @@ if deploy_policies == True:
                 for item in data[i]:
                     #print("The Operations item is", item)
                     if item['type'] == 'Microsoft.ApiManagement/service/apis/policies':
-                        #print("the Collection item is ",item['properties'])
-                        #print("Operation Name is",item['name'])
                         operationjson=item['properties']
                         #print("Policies Json",operationjson)
                         operationString=item['name'].split(",")
-                        #print("Database name after split",databasenameString[1])
                         LastString=operationString[1]
                         apis=LastString.split("/")
                         api_name=apis[1]
-                        #api_operation_name=apis[2].replace("')]","")
-
-                        #print("DatabaseName",database[1])
-                        #print(" Policy api Name",api_name)
-                        #
-                        #print("Checking and Creating Container for Database..",apis[1],apis[2])
                         updated_json_value='{'+'"properties"'+":"+json.dumps(operationjson)+'}'
                         #print("Operation Name",updated_json_value)
                         updated_apijson_load=json.loads(updated_json_value)
@@ -357,7 +299,7 @@ if deploy_policies == True:
                         json_object = json.loads(updated_json_value)
                         print("API Name",api_name)
                         #print("Policy Json Object is",json_object)
-                        if api_name in result_api:
+                        if api_name in result_api or result_api=='full':
                             print("Creating API Policies with :")
                             create_policies(json_object,api_name)
                         else:
@@ -379,12 +321,6 @@ if deploy_ops_policies == True:
                         apis=LastString.split("/")
                         api_name=apis[1]
                         operation_name=apis[2]
-                        #api_operation_name=apis[2].replace("')]","")
-                        
-                        #print("DatabaseName",database[1])
-                        #print(" Policy api Name",api_name)
-                        #
-                        #print("Checking and Creating Container for Database..",apis[1],apis[2])
                         updated_json_value='{'+'"properties"'+":"+json.dumps(operationjson)+'}'
                         #print("Operation Name",updated_json_value)
                         updated_apijson_load=json.loads(updated_json_value)
@@ -394,7 +330,7 @@ if deploy_ops_policies == True:
                         print("Operation Name",operation_name)
                         print("Json PayLoad",json_object)
                         #print("Policy Json Object is",json_object)
-                        if api_name in result_api:
+                        if api_name in result_api or result_api=='full':
                             print("Creating Operation Policies with :")
                             create_ops_policies(json_object,api_name,operation_name)
                         else:
