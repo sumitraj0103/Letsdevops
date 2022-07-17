@@ -16,9 +16,9 @@ on:
         default: '/APIM/arm-template/'
             
       apis_list:
-        description: 'List of APIs to Deploy--> , separated'
+        description: 'List of APIs to Deploy--> , separated OR all for all the Object'
         required: true
-        default: 'cardx-datax-cardxlos-autouwrt-cust-dly,cardx-datax-cardxlos-autouwrt-dpst-dly'
+        default: 'all'
 
 jobs:
   #############################################################
