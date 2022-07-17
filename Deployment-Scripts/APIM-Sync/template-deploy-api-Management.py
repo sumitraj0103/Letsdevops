@@ -169,6 +169,7 @@ def create_namedValue(namedValueproperties,namedValue):
     if response.status_code == 400:    
         raise Exception("API Failed, Result: {}".format(response.json()))    
         response.raise_for_status()
+        
 def create_ops_policies(policyproperties,opapiname,opname):
     target_api_url="https://management.azure.com/subscriptions/"+subscription_id+"/resourcegroups/"+resourceGroup+"/providers/Microsoft.ApiManagement/service/"+apim_service+"/apis/"+opapiname+"/operations/"+opname+"/policies/policy?api-version=2021-08-01"
     headers = {'Authorization': 'Bearer {}'.format(DF_MANAGEMENT_TOKEN)}
@@ -211,7 +212,7 @@ if deploy_apis == True:
                         api_name_value=api_Name.replace("')]","")
                 
                         print("Checking and Creating apis..",api_name_value)
-                        if api_name_value in result_api or result_api=='all':
+                        if api_name_value in result_api or 'all' in result_api:
                             print("The Selcted API is ready to create",api_Name)
                             create_apis(apis_json,api_name_value)
                         else:
@@ -275,7 +276,7 @@ if deploy_operations == True:
                         json_object = json.loads(updated_json_value)
                         print("API Name and Operation Name",api_name,api_operation_name)
                         #print("Json Object is",json_object)
-                        if api_name in result_api or result_api=='all':
+                        if api_name in result_api or 'all' in result_api:
                             create_operations(json_object,api_name,api_operation_name)
 
 #Create api policies
@@ -298,7 +299,7 @@ if deploy_policies == True:
                         json_object = json.loads(updated_json_value)
                         print("API Name",api_name)
                         #print("Policy Json Object is",json_object)
-                        if api_name in result_api or result_api=='all':
+                        if api_name in result_api or 'all' in result_api:
                             print("Creating API Policies with :")
                             create_policies(json_object,api_name)
                         else:
@@ -329,7 +330,7 @@ if deploy_ops_policies == True:
                         print("Operation Name",operation_name)
                         print("Json PayLoad",json_object)
                         #print("Policy Json Object is",json_object)
-                        if api_name in result_api or result_api=='all':
+                        if api_name in result_api or 'all' in result_api:
                             print("Creating Operation Policies with :")
                             create_ops_policies(json_object,api_name,operation_name)
                         else:
