@@ -97,7 +97,7 @@ for i in data['data']:
         partitions_count_value = partitions_count
         
     if replication_factor == 'default':
-        replication_factor= i['replication_factor']
+       replication_factor_value= i['replication_factor']
     else:
         replication_factor_value = replication_factor
         
