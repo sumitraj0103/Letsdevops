@@ -14,6 +14,11 @@ on:
         description: 'List of Topics to Deploy--> , separated or set full for all topic to Deploy'
         required: true
         default: 'srs-test1'
+     
+      delete_topic_list:
+        description: 'List of Topics to Delete--> , separated'
+        required: true
+        default: 'srs-test1'
   
 jobs:
   #############################################################
@@ -181,3 +186,4 @@ jobs:
         source_cluster_id: ${{ env.Confluent_Source_Cluster_Id }}
         target_cluster_id: ${{ env.Confluent_Target_Cluster_Id }}
         topic_list: ${{ github.event.inputs.topic_list }}
+        delete_topic_list: ${{ github.event.delete_topic_list }}
