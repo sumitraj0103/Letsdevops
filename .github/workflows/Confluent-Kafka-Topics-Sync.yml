@@ -43,13 +43,12 @@ jobs:
     needs: Build
     runs-on: ubuntu-latest
     env:
-       Confluent_Source_Server: 'lkc-399xj-epwq2.southeastasia.azure.glb.confluent.cloud'
-       Confluent_Target_Server: 'lkc-81m98r-lq99p.southeastasia.azure.glb.confluent.cloud'
-       Confluent_Source_Cluster_Id: 'lkc-399xj'
-       Confluent_Target_Cluster_Id: 'lkc-81m98r'
-       keyVaultName-NPR: 'KEY-RG-SEA-CTRL-DX-NPR'
-       keyVaultName-PRP: 'KEY-RG-SEA-CTRL-DX-PRP'
-       NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt
+       Confluent_Source_Server: 'pkc-epwny.eastus.azure.confluent.cloud'
+       Confluent_Target_Server: 'pkc-epwny.eastus.azure.confluent.cloud'
+       Confluent_Source_Cluster_Id: 'lkc-380qx0'
+       Confluent_Target_Cluster_Id: 'lkc-do8dn1'
+       keyVaultName-NPR: 'AKV-NPR'
+       keyVaultName-PRP: 'AKV-PRP'
         
     steps:
     
