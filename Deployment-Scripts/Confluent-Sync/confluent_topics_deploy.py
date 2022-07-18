@@ -71,7 +71,7 @@ def delete_topic(cluster_id,topic_name):
 
     #conn = http.client.HTTPSConnection("pkc-00000.region.provider.confluent.cloud")
     #json_value_ops=json.loads(payload_json)
-    target_conn.request("DELETE", "/kafka/v3/clusters/"+cluster_id+"/topics/"+topic_name", target_headers)
+    target_conn.request("DELETE", "/kafka/v3/clusters/"+cluster_id+"/topics/"+topic_name, target_headers)
     res = target_conn.getresponse()
     data = res.read()
     print(data.decode("utf-8"))
