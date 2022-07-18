@@ -15,7 +15,7 @@ on:
         required: true
         default: 'srs-test1'
      
-      delete_topic_list:
+      topic_list_delete:
         description: 'List of Topics to Delete--> , separated'
         required: true
         default: 'srs-test1'
@@ -186,4 +186,4 @@ jobs:
         source_cluster_id: ${{ env.Confluent_Source_Cluster_Id }}
         target_cluster_id: ${{ env.Confluent_Target_Cluster_Id }}
         topic_list: ${{ github.event.inputs.topic_list }}
-        delete_topic_list: ${{ github.event.inputs.delete_topic_list }}
+        topic_list_delete: ${{ github.event.inputs.topic_list_delete }}
