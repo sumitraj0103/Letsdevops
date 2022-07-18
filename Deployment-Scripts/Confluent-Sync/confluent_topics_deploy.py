@@ -13,13 +13,14 @@ target_server= os.environ.get("target_server")
 source_cluster_id=os.environ.get("source_cluster_id")
 target_cluster_id=os.environ.get("target_cluster_id")
 topics_deploy=os.environ.get("topic_list")
-src_menv=os.environ.get("src_menv")
-tgt_menv=os.environ.get("tgt_menv")
+topics_delete=os.environ.get("delete_topic_list")
 
 if topics_deploy != "full":
     topics_details=topics_deploy.split(",")
 else:
     print("All Topics needs to be created")
+
+delete_topics=topics_delete.split(",")
 
 # Create Basic Authentication for Source And Target Confluent Cluster
 src_auth=source_api_key + ':' + source_api_secret
@@ -66,6 +67,14 @@ def create_topic(cluster_id,payload_json):
     data = res.read()
     print(data.decode("utf-8"))
 
+def delete_topic(cluster_id,topic_name):
+
+    #conn = http.client.HTTPSConnection("pkc-00000.region.provider.confluent.cloud")
+    #json_value_ops=json.loads(payload_json)
+    target_conn.request("DELETE", "/kafka/v3/clusters/"+cluster_id+"/topics/"+topic_name", target_headers)
+    res = target_conn.getresponse()
+    data = res.read()
+    print(data.decode("utf-8"))
 ######## Test ###################
 #app_json=topic_payload('devops-cicd-test-2',6,3)
 #create_topic(target_cluster_id,app_json)
@@ -101,3 +110,10 @@ for i in data['data']:
             #print("Here is the Application Json for Topic",app_json)
         else:
             print("Topic is not selected for Sync",i['topic_name'])
+
+for item in delete_topics:
+    if item == '':
+        print("there is no selected Topic to Delete
+    else:
+        print("Delete the Topic",item)
+        delete_topic(target_cluster_id,item)
