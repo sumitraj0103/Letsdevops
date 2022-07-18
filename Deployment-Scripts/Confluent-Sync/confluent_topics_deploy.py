@@ -20,8 +20,8 @@ if topics_deploy != "full":
 else:
     print("All Topics needs to be created")
 
-  
-topics_to_delete= topics_delete.split(",")
+print("the list of topic to lelete",topics_delete)
+topics_to_delete=topics_delete.split(",")
 # Create Basic Authentication for Source And Target Confluent Cluster
 src_auth=source_api_key + ':' + source_api_secret
 source_auth_key = base64.b64encode(src_auth.encode()).decode()
