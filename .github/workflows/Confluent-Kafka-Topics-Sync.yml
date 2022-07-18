@@ -1,4 +1,4 @@
-name: DATAX-NPR-CONFLUENT-KAFKA-TOPIC
+name: Confluent-Topic-Sync
 
 # Manual trigger with parameters
 on:
@@ -14,38 +14,22 @@ on:
         description: 'List of Topics to Deploy--> , separated or set full for all topic to Deploy'
         required: true
         default: 'devops-test1'
-        
-      INPUT_TAG:
-        description: 'Tag/Baseline Number'
-        required: true
-        default: 'DATAX_BSL_0001'
-      
-      INPUT_COMMITID:
-        description: 'Revision Number'
-        required: true
-        default: 'fd621f48b39fd0f1df5c9226505aadd27a498a4a'
-
+  
 jobs:
   #############################################################
   # This is packaging up the files from Git to the Artifacts files
   #############################################################
   Build:
-    runs-on: [ self-hosted-dev ]
-    env:
-      input_commitid: '${{ github.event.inputs.INPUT_COMMITID }}'
+    runs-on: ubuntu-host
 
     # Checkout code
     steps:
     - name: Checkout repo
       uses: actions/checkout@v2
-      with:
-        ref: '${{ env.input_commitid }}'
 
     # Publish Artifact: Publish: Deployment-Scripts
     - name: 'Publish Artifact: Confluent Topic SYNC' 
       uses: actions/upload-artifact@v2
-      env:
-          NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt 
       with:
         name: 'deployment-scripts'
         path: '${{ github.workspace }}/Deployment-Scripts/Confluent-Sync/'
@@ -69,48 +53,39 @@ jobs:
         
     steps:
     
-    - name: Checkout on shared marketplace repo
-      uses: actions/checkout@v2
-      with:
-          repository: 'Share-Module/market-place-module'
-          token: ${{ secrets.PAT_ACCESS_MARKET_PLACE_MODULE }}
-          
-          
     # Login to Azure
     - name: Login via Az module
-      uses: ./azure-login
+      uses: Azure/login@v1.4.5
       with:
         creds: | 
-          ${{ secrets.DATAX_SP_PRP }}
+          ${{ secrets.SP_NPR }}
           
     # Download secret from KeyVault Secrets
     - name: Download publish profile from KeyVault Secrets
-      uses: ./keyvault-module
+      uses: Azure/get-keyvault-secrets@v1
       with:
         keyvault: ${{ env.keyVaultName-PRP }}
-        secrets: 'dxseackafka001prp-key,dxseackafka001prp-secretkey'
+        secrets: 'confluent-kafka-prp-keyconfluent-kafka-prp-secretkey'
       id: ConfluentSecretActionPRP
   
     # Login to Azure
     - name: Login via Az module
-      uses: ./azure-login
+      uses: Azure/login@v1.4.5
       with:
         creds: | 
           ${{ secrets.DATAX_SP_NPR }}
           
     # Download secret from KeyVault Secrets
     - name: Download publish profile from KeyVault Secrets
-      uses: ./keyvault-module
+      uses: Azure/get-keyvault-secrets@v1
       with:
         keyvault: ${{ env.keyVaultName-NPR }}
-        secrets: 'dxseackafka001dev-key,dxseackafka001dev-secretkey'
+        secrets: 'confluent-kafka-npr-key,confluent-kafka-npr-secretkey'
       id: ConfluentSecretActionNPR
       
     # Download Artifact: deployment-scripts
     - name: 'Download Artifact: Deployment Script' 
       uses: actions/download-artifact@v2
-      env:
-          NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt  
       with:
         name: 'deployment-scripts'
         path: ${{ github.workspace }}/Deployment-Scripts/Confluent-Sync/
@@ -125,18 +100,15 @@ jobs:
        chmod +x $GITHUB_WORKSPACE/Deployment-Scripts/Confluent-Sync/confluent_topics_deploy.py
        python3 $GITHUB_WORKSPACE/Deployment-Scripts/Confluent-Sync/confluent_topics_deploy.py
       env:
-        source_api_key: ${{ steps.ConfluentSecretActionNPR.outputs.dxseackafka001dev-key }}
-        source_api_secret: ${{ steps.ConfluentSecretActionNPR.outputs.dxseackafka001dev-secretkey }}
-        target_api_key: ${{ steps.ConfluentSecretActionPRP.outputs.dxseackafka001prp-key }}
-        target_api_secret: ${{ steps.ConfluentSecretActionPRP.outputs.dxseackafka001prp-secretkey }}
+        source_api_key: ${{ steps.ConfluentSecretActionNPR.outputs.confluent-kafka-npr-key }}
+        source_api_secret: ${{ steps.ConfluentSecretActionNPR.outputs.confluent-kafka-npr-secretkey }}
+        target_api_key: ${{ steps.ConfluentSecretActionPRP.outputs.confluent-kafka-prp-key }}
+        target_api_secret: ${{ steps.ConfluentSecretActionPRP.outputs.confluent-kafka-prp-secretkey }}
         source_server: ${{ env.Confluent_Source_Server }}
         target_server: ${{ env.Confluent_Target_Server }}
         source_cluster_id: ${{ env.Confluent_Source_Cluster_Id }}
         target_cluster_id: ${{ env.Confluent_Target_Cluster_Id }}
         topic_list: ${{ github.event.inputs.topic_list }}
-        src_menv: "sit"
-        tgt_menv: "uat"
-
 
 #############################################################
 # Sync from PRP to PRD
@@ -144,60 +116,49 @@ jobs:
   PRP-PRD:
     if: ${{ github.event.inputs.Environment == 'prp-prd' }}
     needs: Build
-    runs-on: [ self-hosted-prd ]
+    runs-on: ubuntu-latest
     env:
-       Confluent_Source_Server: 'lkc-81m98r-lq99p.southeastasia.azure.glb.confluent.cloud'
-       Confluent_Target_Server: 'lkc-6kopy6-g3ke06.southeastasia.azure.glb.confluent.cloud'
-       Confluent_Source_Cluster_Id: 'lkc-81m98r'
-       Confluent_Target_Cluster_Id: 'lkc-6kopy6'
+       Confluent_Source_Server: 'lkc-399xj-epwq2.southeastasia.azure.glb.confluent.cloud'
+       Confluent_Target_Server: 'lkc-81m98r-lq99p.southeastasia.azure.glb.confluent.cloud'
+       Confluent_Source_Cluster_Id: 'lkc-399xj'
+       Confluent_Target_Cluster_Id: 'lkc-81m98r'
+       keyVaultName-NPR: 'KEY-RG-SEA-CTRL-DX-NPR'
        keyVaultName-PRP: 'KEY-RG-SEA-CTRL-DX-PRP'
-       keyVaultName-PRD: 'KEY-RG-SEA-CTRL-DX-PRD'
-       NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt
-        
+     
     steps:
-    
-    - name: Checkout on shared marketplace repo
-      uses: actions/checkout@v2
-      with:
-          repository: 'Share-Module/market-place-module'
-          token: ${{ secrets.PAT_ACCESS_MARKET_PLACE_MODULE }}
-          
-          
     # Login to Azure
     - name: Login via Az module
-      uses: ./azure-login
+      uses: Azure/login@v1.4.5
       with:
         creds: | 
-          ${{ secrets.DATAX_SP_PRD }}
+          ${{ secrets.SP_PRD }}
           
     # Download secret from KeyVault Secrets
     - name: Download publish profile from KeyVault Secrets
-      uses: ./keyvault-module
+      uses: Azure/get-keyvault-secrets@v1
       with:
         keyvault: ${{ env.keyVaultName-PRD }}
-        secrets: 'dxseackafka001prd-key,dxseackafka001prd-secretkey'
+        secrets: 'confluent-kafka-prd-keyconfluent-kafka-prd-secretkey'
       id: ConfluentSecretActionPRD
   
     # Login to Azure
     - name: Login via Az module
-      uses: ./azure-login
+      uses: Azure/login@v1.4.5
       with:
         creds: | 
           ${{ secrets.DATAX_SP_PRP }}
           
     # Download secret from KeyVault Secrets
     - name: Download publish profile from KeyVault Secrets
-      uses: ./keyvault-module
+      uses: Azure/get-keyvault-secrets@v1
       with:
         keyvault: ${{ env.keyVaultName-PRP }}
-        secrets: 'dxseackafka001prp-key,dxseackafka001prp-secretkey'
+        secrets: 'confluent-kafka-prp-key,confluent-kafka-prp-secretkey'
       id: ConfluentSecretActionPRP
       
     # Download Artifact: deployment-scripts
     - name: 'Download Artifact: Deployment Script' 
       uses: actions/download-artifact@v2
-      env:
-          NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt  
       with:
         name: 'deployment-scripts'
         path: ${{ github.workspace }}/Deployment-Scripts/Confluent-Sync/
@@ -212,14 +173,12 @@ jobs:
        chmod +x $GITHUB_WORKSPACE/Deployment-Scripts/Confluent-Sync/confluent_topics_deploy.py
        python3 $GITHUB_WORKSPACE/Deployment-Scripts/Confluent-Sync/confluent_topics_deploy.py
       env:
-        source_api_key: ${{ steps.ConfluentSecretActionPRP.outputs.dxseackafka001prp-key }}
-        source_api_secret: ${{ steps.ConfluentSecretActionPRP.outputs.dxseackafka001prp-secretkey }}
-        target_api_key: ${{ steps.ConfluentSecretActionPRD.outputs.dxseackafka001prd-key }}
-        target_api_secret: ${{ steps.ConfluentSecretActionPRD.outputs.dxseackafka001prd-secretkey }}
+        source_api_key: ${{ steps.ConfluentSecretActionNPR.outputs.confluent-kafka-prp-key }}
+        source_api_secret: ${{ steps.ConfluentSecretActionNPR.outputs.confluent-kafka-prp-secretkey }}
+        target_api_key: ${{ steps.ConfluentSecretActionPRP.outputs.confluent-kafka-prd-key }}
+        target_api_secret: ${{ steps.ConfluentSecretActionPRP.outputs.confluent-kafka-prd-secretkey }}
         source_server: ${{ env.Confluent_Source_Server }}
         target_server: ${{ env.Confluent_Target_Server }}
         source_cluster_id: ${{ env.Confluent_Source_Cluster_Id }}
         target_cluster_id: ${{ env.Confluent_Target_Cluster_Id }}
         topic_list: ${{ github.event.inputs.topic_list }}
-        src_menv: "uat"
-        tgt_menv: "prod"
