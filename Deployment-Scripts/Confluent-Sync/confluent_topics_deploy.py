@@ -76,8 +76,6 @@ list_topic_detail=list_topic_details()
 #print("the Topic URL",list_topic_detail)
 data = json.loads(list_topic_detail)
 for i in data['data']:
-    #replace the string
-    topic_name_update=i['topic_name'].replace(src_menv,tgt_menv)
     #print("The updated Topic Name is",topic_name_update)
     app_json=topic_payload(topic_name_update,i['partitions_count'],i['replication_factor'])
     #app_json=topic_payload('devops-test',6,3)
