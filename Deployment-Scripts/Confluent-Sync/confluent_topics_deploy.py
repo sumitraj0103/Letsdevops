@@ -100,7 +100,9 @@ for i in data['data']:
        replication_factor_value= i['replication_factor']
     else:
         replication_factor_value = replication_factor
-        
+    
+    print("the Partition Count is ",partitions_count_value)
+    print("the replication_factor_value Count is ",replication_factor_value) 
     #app_json=topic_payload(topic_name_update,i['partitions_count'],i['replication_factor'])
     app_json=topic_payload(topic_name_update,partitions_count_value,replication_factor_value)
     #app_json=topic_payload('devops-test',6,3)
