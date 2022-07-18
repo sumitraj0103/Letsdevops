@@ -9,17 +9,14 @@ on:
         description: 'Enviroment to Sync with npr-prp,prp-prd'
         required: true
         default: 'npr-prp'
-                  
+      RemoveList:
+        description: 'List of Topics to Delete--> , separated or set full for all topic to Deploy'
+        required: true
+        default: 'srs-test1'
       topic_list:
         description: 'List of Topics to Deploy--> , separated or set full for all topic to Deploy'
         required: true
         default: 'srs-test1'
-     
-      topic_deletelist:
-        description: 'List of Topics to Delete--> , separated'
-        required: true
-        default: 'srs-test1,srs-test1'
-  
 jobs:
   #############################################################
   # This is packaging up the files from Git to the Artifacts files
@@ -185,5 +182,6 @@ jobs:
         target_server: ${{ env.Confluent_Target_Server }}
         source_cluster_id: ${{ env.Confluent_Source_Cluster_Id }}
         target_cluster_id: ${{ env.Confluent_Target_Cluster_Id }}
+        topic_deletelist: ${{ github.event.inputs.RemoveList }}
         topic_list: ${{ github.event.inputs.topic_list }}
-        topic_deletelist: "${{ github.event.inputs.topic_deletelist }}"
+        
