@@ -64,7 +64,7 @@ jobs:
       uses: Azure/get-keyvault-secrets@v1
       with:
         keyvault: ${{ env.keyVaultName-PRP }}
-        secrets: 'confluent-kafka-prp-key,confluent-kafka-prp-secretkey'
+        secrets: 'confluentcluster-kafka-prp-key,confluentcluster-kafka-prp-secretkey'
       id: ConfluentSecretActionPRP
   
     # Login to Azure
@@ -79,7 +79,7 @@ jobs:
       uses: Azure/get-keyvault-secrets@v1
       with:
         keyvault: ${{ env.keyVaultName-NPR }}
-        secrets: 'confluent-kafka-npr-key,confluent-kafka-npr-secretkey'
+        secrets: 'confluentcluster-kafka-npr-key,confluentcluster-kafka-npr-secretkey'
       id: ConfluentSecretActionNPR
       
     # Download Artifact: deployment-scripts
@@ -99,10 +99,10 @@ jobs:
        chmod +x $GITHUB_WORKSPACE/Deployment-Scripts/Confluent-Sync/confluent_topics_deploy.py
        python3 $GITHUB_WORKSPACE/Deployment-Scripts/Confluent-Sync/confluent_topics_deploy.py
       env:
-        source_api_key: ${{ steps.ConfluentSecretActionNPR.outputs.confluent-kafka-npr-key }}
-        source_api_secret: ${{ steps.ConfluentSecretActionNPR.outputs.confluent-kafka-npr-secretkey }}
-        target_api_key: ${{ steps.ConfluentSecretActionPRP.outputs.confluent-kafka-prp-key }}
-        target_api_secret: ${{ steps.ConfluentSecretActionPRP.outputs.confluent-kafka-prp-secretkey }}
+        source_api_key: ${{ steps.ConfluentSecretActionNPR.outputs.confluentcluster-kafka-npr-key }}
+        source_api_secret: ${{ steps.ConfluentSecretActionNPR.outputs.confluentcluster-kafka-npr-secretkey }}
+        target_api_key: ${{ steps.ConfluentSecretActionPRP.outputs.confluentcluster-kafka-prp-key }}
+        target_api_secret: ${{ steps.ConfluentSecretActionPRP.outputs.confluentcluster-kafka-prp-secretkey }}
         source_server: ${{ env.Confluent_Source_Server }}
         target_server: ${{ env.Confluent_Target_Server }}
         source_cluster_id: ${{ env.Confluent_Source_Cluster_Id }}
