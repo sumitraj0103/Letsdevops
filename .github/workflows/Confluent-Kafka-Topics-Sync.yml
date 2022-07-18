@@ -15,7 +15,7 @@ on:
         default: 'srs-test1'
       RemoveList:
         description: 'List of Topics to Delete--> , separated or set full for all topic to Deploy'
-        required: true
+        required: false
         default: ''
 jobs:
   #############################################################
