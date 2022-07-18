@@ -119,8 +119,8 @@ jobs:
         target_cluster_id: ${{ env.Confluent_Target_Cluster_Id }}
         topic_list: ${{ github.event.inputs.topic_list }}
         topic_deletelist: ${{ github.event.inputs.RemoveList }}
-        partitions_count: ${{ github.event.inputs.topic_list }}
-        replication_factor: ${{ github.event.inputs.topic_list }}
+        partitions_count: ${{ github.event.inputs.partitions_count }}
+        replication_factor: ${{ github.event.inputs.replication_factor }}
 
 #############################################################
 # Sync from PRP to PRD
