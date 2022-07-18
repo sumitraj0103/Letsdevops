@@ -16,7 +16,7 @@ on:
       RemoveList:
         description: 'List of Topics to Delete--> , separated or set full for all topic to Deploy'
         required: true
-        default: 'srs-test1'
+        default: ''
 jobs:
   #############################################################
   # This is packaging up the files from Git to the Artifacts files
