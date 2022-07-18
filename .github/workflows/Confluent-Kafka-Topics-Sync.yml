@@ -18,7 +18,7 @@ on:
       topic_list_delete:
         description: 'List of Topics to Delete--> , separated'
         required: true
-        default: 'srs-test1'
+        default: "srs-test1,srs-test1"
   
 jobs:
   #############################################################
