@@ -186,4 +186,4 @@ jobs:
         source_cluster_id: ${{ env.Confluent_Source_Cluster_Id }}
         target_cluster_id: ${{ env.Confluent_Target_Cluster_Id }}
         topic_list: ${{ github.event.inputs.topic_list }}
-        delete_topic_list: ${{ github.event.delete_topic_list }}
+        delete_topic_list: ${{ github.inputs.delete_topic_list }}
