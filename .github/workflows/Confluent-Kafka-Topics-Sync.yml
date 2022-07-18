@@ -72,7 +72,7 @@ jobs:
       uses: Azure/login@v1.4.5
       with:
         creds: | 
-          ${{ secrets.DATAX_SP_NPR }}
+          ${{ secrets.SP_NPR }}
           
     # Download secret from KeyVault Secrets
     - name: Download publish profile from KeyVault Secrets
