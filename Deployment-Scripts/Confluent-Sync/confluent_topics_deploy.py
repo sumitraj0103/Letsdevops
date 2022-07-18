@@ -13,9 +13,9 @@ target_server= os.environ.get("target_server")
 source_cluster_id=os.environ.get("source_cluster_id")
 target_cluster_id=os.environ.get("target_cluster_id")
 topics_deploy=os.environ.get("topic_list")
-topics_delete=os.environ.get("topic_list_delete")
+topic_deletelist=os.environ.get("topic_deletelist")
 
-print("the list of topic to Delete",topics_delete)
+print("the list of topic to Delete",topic_deletelist)
 print("the list of topic to create",topics_deploy)
 
 if topics_deploy != "full":
