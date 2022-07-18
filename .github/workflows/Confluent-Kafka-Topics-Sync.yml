@@ -13,7 +13,7 @@ on:
       topic_list:
         description: 'List of Topics to Deploy--> , separated or set full for all topic to Deploy'
         required: true
-        default: 'devops-test1'
+        default: 'srs-test1'
   
 jobs:
   #############################################################
@@ -65,7 +65,7 @@ jobs:
       uses: Azure/get-keyvault-secrets@v1
       with:
         keyvault: ${{ env.keyVaultName-PRP }}
-        secrets: 'confluent-kafka-prp-keyconfluent-kafka-prp-secretkey'
+        secrets: 'confluent-kafka-prp-key,confluent-kafka-prp-secretkey'
       id: ConfluentSecretActionPRP
   
     # Login to Azure
@@ -138,7 +138,7 @@ jobs:
       uses: Azure/get-keyvault-secrets@v1
       with:
         keyvault: ${{ env.keyVaultName-PRD }}
-        secrets: 'confluent-kafka-prd-keyconfluent-kafka-prd-secretkey'
+        secrets: 'confluent-kafka-prd-key,confluent-kafka-prd-secretkey'
       id: ConfluentSecretActionPRD
   
     # Login to Azure
