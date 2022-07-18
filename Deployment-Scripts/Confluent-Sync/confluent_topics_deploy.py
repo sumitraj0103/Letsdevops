@@ -76,6 +76,7 @@ def delete_topic(cluster_id,topic_name):
     res = target_conn.getresponse()
     data = res.read()
     print(data.decode("utf-8"))
+    
 ######## Test ###################
 #app_json=topic_payload('devops-cicd-test-2',6,3)
 #create_topic(target_cluster_id,app_json)
