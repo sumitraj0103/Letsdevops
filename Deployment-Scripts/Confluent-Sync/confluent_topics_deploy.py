@@ -13,7 +13,7 @@ target_server= os.environ.get("target_server")
 source_cluster_id=os.environ.get("source_cluster_id")
 target_cluster_id=os.environ.get("target_cluster_id")
 topics_deploy=os.environ.get("topic_list")
-topics_delete=os.environ.get("delete_topic_list")
+topics_delete=os.environ.get("topic_list_delete")
 
 if topics_deploy != "full":
     topics_details=topics_deploy.split(",")
@@ -21,8 +21,7 @@ else:
     print("All Topics needs to be created")
 
   
-delete_topics=topics_delete.split(",")
-
+topics_to_delete= topics_delete.split(",")
 # Create Basic Authentication for Source And Target Confluent Cluster
 src_auth=source_api_key + ':' + source_api_secret
 source_auth_key = base64.b64encode(src_auth.encode()).decode()
@@ -112,7 +111,7 @@ for i in data['data']:
         else:
             print("Topic is not selected for Sync",i['topic_name'])
 
-for item in delete_topics:
+for item in topics_to_delete:
     if item == '':
         print("there is no selected Topic to Delete")
     else:
