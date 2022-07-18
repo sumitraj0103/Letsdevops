@@ -14,6 +14,8 @@ source_cluster_id=os.environ.get("source_cluster_id")
 target_cluster_id=os.environ.get("target_cluster_id")
 topics_deploy=os.environ.get("topic_list")
 topic_deletelist=os.environ.get("topic_deletelist")
+partitions_count=os.environ.get("partitions_count")
+replication_factor=os.environ.get("replication_factor")
 
 print("the list of topic to Delete",topic_deletelist)
 print("the list of topic to create",topics_deploy)
@@ -89,7 +91,18 @@ data = json.loads(list_topic_detail)
 for i in data['data']:
     #print("The updated Topic Name is",topic_name_update)
     topic_name_update=i['topic_name']
-    app_json=topic_payload(topic_name_update,i['partitions_count'],i['replication_factor'])
+    if partitions_count == 'default':
+        partitions_count_value= i['partitions_count']
+    else:
+        partitions_count_value = partitions_count
+        
+    if replication_factor == 'default':
+        replication_factor= i['replication_factor']
+    else:
+        replication_factor_value = replication_factor
+        
+    #app_json=topic_payload(topic_name_update,i['partitions_count'],i['replication_factor'])
+    app_json=topic_payload(topic_name_update,partitions_count_value,replication_factor_value)
     #app_json=topic_payload('devops-test',6,3)
 
     #print("the App json for Creating the Topic", app_json)
