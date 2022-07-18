@@ -77,6 +77,7 @@ list_topic_detail=list_topic_details()
 data = json.loads(list_topic_detail)
 for i in data['data']:
     #print("The updated Topic Name is",topic_name_update)
+    topic_name_update=i['topic_name']
     app_json=topic_payload(topic_name_update,i['partitions_count'],i['replication_factor'])
     #app_json=topic_payload('devops-test',6,3)
 
