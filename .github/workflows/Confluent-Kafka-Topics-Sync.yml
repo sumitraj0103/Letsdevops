@@ -13,6 +13,14 @@ on:
         description: 'List of Topics to Deploy--> , separated or set full for all topic to Deploy'
         required: true
         default: 'srs-test1'
+      partitions_count:
+        description: 'Select the Custom Partition Count, else keep for default'
+        required: true
+        default: 'default'
+      replication_factor:
+        description: 'Select the Custom replication_factor, else keep for default'
+        required: false
+        default: 'default'
       RemoveList:
         description: 'List of Topics to Delete--> , separated or set full for all topic to Deploy'
         required: false
@@ -111,6 +119,8 @@ jobs:
         target_cluster_id: ${{ env.Confluent_Target_Cluster_Id }}
         topic_list: ${{ github.event.inputs.topic_list }}
         topic_deletelist: ${{ github.event.inputs.RemoveList }}
+        partitions_count: ${{ github.event.inputs.topic_list }}
+        replication_factor: ${{ github.event.inputs.topic_list }}
 
 #############################################################
 # Sync from PRP to PRD
@@ -185,4 +195,5 @@ jobs:
         target_cluster_id: ${{ env.Confluent_Target_Cluster_Id }}
         topic_deletelist: ${{ github.event.inputs.RemoveList }}
         topic_list: ${{ github.event.inputs.topic_list }}
+      
         
