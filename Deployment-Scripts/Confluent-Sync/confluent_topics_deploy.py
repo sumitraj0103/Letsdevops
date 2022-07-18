@@ -113,7 +113,7 @@ for i in data['data']:
 
 for item in delete_topics:
     if item == '':
-        print("there is no selected Topic to Delete
+        print("there is no selected Topic to Delete")
     else:
         print("Delete the Topic",item)
         delete_topic(target_cluster_id,item)
