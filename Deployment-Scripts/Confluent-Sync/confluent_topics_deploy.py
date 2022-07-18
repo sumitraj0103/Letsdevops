@@ -17,7 +17,7 @@ topic_deletelist=os.environ.get("topic_deletelist")
 
 print("the list of topic to Delete",topic_deletelist)
 print("the list of topic to create",topics_deploy)
-
+topic_deletelist = topic_deletelist.split(",")
 if topics_deploy != "full":
     topics_details=topics_deploy.split(",")
 else:
@@ -112,7 +112,7 @@ for i in data['data']:
         else:
             print("Topic is not selected for Sync",i['topic_name'])
 
-for item in topics_to_delete:
+for item in topic_deletelist:
     if item == '':
         print("there is no selected Topic to Delete")
     else:
