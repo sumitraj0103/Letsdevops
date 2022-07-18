@@ -9,12 +9,12 @@ on:
         description: 'Enviroment to Sync with npr-prp,prp-prd'
         required: true
         default: 'npr-prp'
-      RemoveList:
-        description: 'List of Topics to Delete--> , separated or set full for all topic to Deploy'
-        required: true
-        default: 'srs-test1'
       topic_list:
         description: 'List of Topics to Deploy--> , separated or set full for all topic to Deploy'
+        required: true
+        default: 'srs-test1'
+      RemoveList:
+        description: 'List of Topics to Delete--> , separated or set full for all topic to Deploy'
         required: true
         default: 'srs-test1'
 jobs:
