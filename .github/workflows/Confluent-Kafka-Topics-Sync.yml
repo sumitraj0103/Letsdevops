@@ -22,7 +22,7 @@ on:
         required: false
         default: 'default'
       rentention_days:
-        description: 'Select the Rentention Policy Day in Number like, 7, 10'
+        description: 'Rentention Day of logs like- 7, 10. For Infinite -1'
         required: false
         default: 'default'
       RemoveList:
