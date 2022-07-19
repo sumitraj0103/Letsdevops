@@ -6,19 +6,19 @@ on:
     inputs:
       # Name of your Source Cosmos DB
       Environment:
-        description: 'Enviroment to Sync with npr-prp,prp-prd'
+        description: 'Enviroment --> npr-prp,prp-prd'
         required: true
         default: 'npr-prp'
       topic_list:
-        description: 'List of Topics to Deploy--> , separated or set full for all topic to Deploy'
+        description: 'Topics to Deploy--> , separated or set full for all topic to Deploy'
         required: true
-        default: 'srs-test1'
+        default: 'srs-test1,srstest2'
       partitions_count:
-        description: 'Select the Custom Partition Count, else keep for default'
+        description: 'Custom Partition Count else keep --> default'
         required: true
         default: 'default'
       replication_factor:
-        description: 'Select the Custom replication_factor, else keep for default'
+        description: 'replication_factor else keep --> default'
         required: false
         default: 'default'
       rentention_days:
@@ -26,7 +26,7 @@ on:
         required: false
         default: 'default'
       RemoveList:
-        description: 'List of Topics to Delete--> , separated or set full for all topic to Deploy'
+        description: 'Topics to Delete--> , separated for Multiple Value'
         required: false
         default: ''
 jobs:
