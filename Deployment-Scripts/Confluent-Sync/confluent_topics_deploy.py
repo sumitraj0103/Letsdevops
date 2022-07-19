@@ -62,10 +62,15 @@ def topic_payload(topic_name,partitions_count,replication_factor,rententionpol):
         print("The selected Retention is Default Value")
     else:
         payload_value+=","
-        valueinms= (int)(rententionpol)*86400000
-        poltype='"name":'+'"retention.ms"'+","
-        polValue='"value":"'+(str)(valueinms)+'"'
-        payload_value+='"configs":[{'+poltype+polValue+"}]}"
+        if(rententionpol =="-1"):
+            poltype='"name":'+'"retention.ms"'+","
+            polValue='"value":"'+(str)(rententionpol)+'"'
+            payload_value+='"configs":[{'+poltype+polValue+"}]}"
+        else:
+            valueinms= (int)(rententionpol)*86400000
+            poltype='"name":'+'"retention.ms"'+","
+            polValue='"value":"'+(str)(valueinms)+'"'
+            payload_value+='"configs":[{'+poltype+polValue+"}]}"
     return payload_value
 
 def create_topic(cluster_id,payload_json):
