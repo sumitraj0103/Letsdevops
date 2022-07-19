@@ -57,7 +57,8 @@ def topic_payload(topic_name,partitions_count,replication_factor,rententionpol):
         payload_value+='"partitions_count":'+str(partitions_count)+","
     if replication_factor != "":
         payload_value+='"replication_factor":'+str(replication_factor)
-    if rententionpol =="default":    
+    if rententionpol =="default":
+        payload_value+="}"
         print("The selected Retention is Default Value")
     else:
         payload_value+=","
