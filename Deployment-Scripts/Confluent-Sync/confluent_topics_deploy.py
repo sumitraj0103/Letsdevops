@@ -16,6 +16,7 @@ topics_deploy=os.environ.get("topic_list")
 topic_deletelist=os.environ.get("topic_deletelist")
 partitions_count=os.environ.get("partitions_count")
 replication_factor=os.environ.get("replication_factor")
+rentention_days=os.environ.get("rentention_days")
 
 print("the list of topic to Delete",topic_deletelist)
 print("the list of topic to create",topics_deploy)
@@ -49,16 +50,21 @@ def list_topic_details():
     savedata=data.decode("utf-8")
     return savedata
 
-def topic_payload(topic_name,partitions_count,replication_factor):
-    
+def topic_payload(topic_name,partitions_count,replication_factor,rententionpol):
     if topic_name != "":
         payload_value='{"topic_name":'+'"'+topic_name+'"'+','
     if partitions_count != "":
         payload_value+='"partitions_count":'+str(partitions_count)+","
     if replication_factor != "":
-        payload_value+='"replication_factor":'+str(replication_factor)+"}"
-    #if configs !="":
-        #payload_value+='"configs":'+configs+"}"
+        payload_value+='"replication_factor":'+str(replication_factor)
+    if rententionpol =="default":    
+        print("The selected Retention is Default Value")
+    else:
+        payload_value+=","
+        valueinms= (int)(rententionpol)*86400000
+        poltype='"name":'+'"retention.ms"'+","
+        polValue='"value":"'+(str)(valueinms)+'"'
+        payload_value+='"configs":[{'+poltype+polValue+"}]}"
     return payload_value
 
 def create_topic(cluster_id,payload_json):
@@ -104,7 +110,7 @@ for i in data['data']:
     print("the Partition Count is ",partitions_count_value)
     print("the replication_factor_value Count is ",replication_factor_value) 
     #app_json=topic_payload(topic_name_update,i['partitions_count'],i['replication_factor'])
-    app_json=topic_payload(topic_name_update,partitions_count_value,replication_factor_value)
+    app_json=topic_payload(topic_name_update,partitions_count_value,replication_factor_value,rentention_days)
     #app_json=topic_payload('devops-test',6,3)
 
     #print("the App json for Creating the Topic", app_json)
