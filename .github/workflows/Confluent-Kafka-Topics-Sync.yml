@@ -21,6 +21,10 @@ on:
         description: 'Select the Custom replication_factor, else keep for default'
         required: false
         default: 'default'
+      rentention_policy:
+        description: 'Select the Rentention Policy Day in Number like, 7, 10'
+        required: false
+        default: 'default'
       RemoveList:
         description: 'List of Topics to Delete--> , separated or set full for all topic to Deploy'
         required: false
@@ -121,6 +125,7 @@ jobs:
         topic_deletelist: ${{ github.event.inputs.RemoveList }}
         partitions_count: ${{ github.event.inputs.partitions_count }}
         replication_factor: ${{ github.event.inputs.replication_factor }}
+        rentention_policy: ${{ github.event.inputs.rentention_policy }}
 
 #############################################################
 # Sync from PRP to PRD
