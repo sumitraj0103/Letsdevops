@@ -190,15 +190,17 @@ jobs:
        chmod +x $GITHUB_WORKSPACE/Deployment-Scripts/Confluent-Sync/confluent_topics_deploy.py
        python3 $GITHUB_WORKSPACE/Deployment-Scripts/Confluent-Sync/confluent_topics_deploy.py
       env:
-        source_api_key: ${{ steps.ConfluentSecretActionNPR.outputs.confluent-kafka-prp-key }}
-        source_api_secret: ${{ steps.ConfluentSecretActionNPR.outputs.confluent-kafka-prp-secretkey }}
-        target_api_key: ${{ steps.ConfluentSecretActionPRP.outputs.confluent-kafka-prd-key }}
-        target_api_secret: ${{ steps.ConfluentSecretActionPRP.outputs.confluent-kafka-prd-secretkey }}
+        source_api_key: ${{ steps.ConfluentSecretActionNPR.outputs.confluentcluster-kafka-npr-key }}
+        source_api_secret: ${{ steps.ConfluentSecretActionNPR.outputs.confluentcluster-kafka-npr-secretkey }}
+        target_api_key: ${{ steps.ConfluentSecretActionPRP.outputs.confluentcluster-kafka-prp-key }}
+        target_api_secret: ${{ steps.ConfluentSecretActionPRP.outputs.confluentcluster-kafka-prp-secretkey }}
         source_server: ${{ env.Confluent_Source_Server }}
         target_server: ${{ env.Confluent_Target_Server }}
         source_cluster_id: ${{ env.Confluent_Source_Cluster_Id }}
         target_cluster_id: ${{ env.Confluent_Target_Cluster_Id }}
-        topic_deletelist: ${{ github.event.inputs.RemoveList }}
         topic_list: ${{ github.event.inputs.topic_list }}
-      
+        topic_deletelist: ${{ github.event.inputs.RemoveList }}
+        partitions_count: ${{ github.event.inputs.partitions_count }}
+        replication_factor: ${{ github.event.inputs.replication_factor }}
+        rentention_days: ${{ github.event.inputs.rentention_days }}
         
