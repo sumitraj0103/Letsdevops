@@ -11,7 +11,7 @@ on:
         default: 'npr-prp'
       topic_list:
         description: 'Topics to Deploy--> , separated or set full for all topic to Deploy'
-        required: true
+        required: false
         default: 'srs-test1,srstest2'
       partitions_count:
         description: 'Custom Partition Count else keep --> default'
