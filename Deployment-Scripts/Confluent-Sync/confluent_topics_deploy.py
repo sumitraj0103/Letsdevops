@@ -22,7 +22,10 @@ print("the list of topic to Delete",topic_deletelist)
 print("the list of topic to create",topics_deploy)
 topic_deletelist = topic_deletelist.split(",")
 if topics_deploy != "full":
-    topics_details=topics_deploy.split(",")
+    if topics_deploy !='':
+        topics_details=topics_deploy.split(",")
+    else:
+        topics_deploy= "empty"
 else:
     print("All Topics needs to be created")
 
@@ -100,45 +103,46 @@ def delete_topic(cluster_id,topic_name):
 list_topic_detail=list_topic_details()
 #print("the Topic URL",list_topic_detail)
 data = json.loads(list_topic_detail)
-for i in data['data']:
-    #print("The updated Topic Name is",topic_name_update)
-    topic_name_update=i['topic_name']
-    if partitions_count == 'default':
-        partitions_count_value= i['partitions_count']
-    else:
-        partitions_count_value = partitions_count
-        
-    if replication_factor == 'default':
-       replication_factor_value= i['replication_factor']
-    else:
-        replication_factor_value = replication_factor
-    
-    print("the Partition Count is ",partitions_count_value)
-    print("the replication_factor_value Count is ",replication_factor_value) 
-    #app_json=topic_payload(topic_name_update,i['partitions_count'],i['replication_factor'])
-    app_json=topic_payload(topic_name_update,partitions_count_value,replication_factor_value,rentention_days)
-    #app_json=topic_payload('devops-test',6,3)
+if topics_deploy != "empty":
+    for i in data['data']:
+        #print("The updated Topic Name is",topic_name_update)
+        topic_name_update=i['topic_name']
+        if partitions_count == 'default':
+            partitions_count_value= i['partitions_count']
+        else:
+            partitions_count_value = partitions_count
 
-    #print("the App json for Creating the Topic", app_json)
-    if topics_deploy == "full":
-        #print("Need to Deploy All topics")
-        #print("Creating Topic Name",i['topic_name'])
-        print("The Source Topic Name is",i['topic_name'])
-        print("The Target Topic Name to Create is",topic_name_update)
-        print("Creating Topic..",topic_name_update)
-        #print("Here is the Application Json for Topic",app_json)
-        create_topic(target_cluster_id,app_json)
-    else:
-        if i['topic_name'] in topics_details:
+        if replication_factor == 'default':
+           replication_factor_value= i['replication_factor']
+        else:
+            replication_factor_value = replication_factor
+
+        print("the Partition Count is ",partitions_count_value)
+        print("the replication_factor_value Count is ",replication_factor_value) 
+        #app_json=topic_payload(topic_name_update,i['partitions_count'],i['replication_factor'])
+        app_json=topic_payload(topic_name_update,partitions_count_value,replication_factor_value,rentention_days)
+        #app_json=topic_payload('devops-test',6,3)
+
+        #print("the App json for Creating the Topic", app_json)
+        if topics_deploy == "full":
+            #print("Need to Deploy All topics")
+            #print("Creating Topic Name",i['topic_name'])
             print("The Source Topic Name is",i['topic_name'])
             print("The Target Topic Name to Create is",topic_name_update)
-            #print("Here is the Application Json for Topic",app_json)
             print("Creating Topic..",topic_name_update)
-            create_topic(target_cluster_id,app_json)
-            #print("Selected Topic is not in List to Create")
             #print("Here is the Application Json for Topic",app_json)
+            create_topic(target_cluster_id,app_json)
         else:
-            print("Topic is not selected for Sync",i['topic_name'])
+            if i['topic_name'] in topics_details:
+                print("The Source Topic Name is",i['topic_name'])
+                print("The Target Topic Name to Create is",topic_name_update)
+                #print("Here is the Application Json for Topic",app_json)
+                print("Creating Topic..",topic_name_update)
+                create_topic(target_cluster_id,app_json)
+                #print("Selected Topic is not in List to Create")
+                #print("Here is the Application Json for Topic",app_json)
+            else:
+                print("Topic is not selected for Sync",i['topic_name'])
 
 for item in topic_deletelist:
     if item == '':
