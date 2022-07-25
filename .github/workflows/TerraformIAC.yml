@@ -2,7 +2,7 @@
 # Destroy Function is added as per the Requested Use Case
 # It created AKS and resources for DEV UAT and PROD Environment
 
-name: 'Deploy-Infrastructure'
+name: 'Deploy-Infrastructure-TerraformIAC'
 
 on:
   workflow_dispatch:
