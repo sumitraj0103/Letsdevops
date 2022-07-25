@@ -80,7 +80,6 @@ jobs:
     runs-on: 'ubuntu-latest'
     if: ${{ github.event.inputs.ENVIRONMENT == 'Pre-Prod' }}
     environment: 'uat'
-    needs: [ Deploy-DEV ]
     env:
       ARM_CLIENT_ID: ${{secrets.TF_ARM_CLIENT_ID}}
       ARM_CLIENT_SECRET: ${{secrets.TF_ARM_CLIENT_SECRET}}
@@ -133,7 +132,6 @@ jobs:
     runs-on: 'ubuntu-latest'
     if: ${{ github.event.inputs.ENVIRONMENT == 'Prod' }}
     environment: 'prod'
-    needs: [ Deploy-DEV, Deploy-UAT ]
     env:
       ARM_CLIENT_ID: ${{secrets.TF_ARM_CLIENT_ID}}
       ARM_CLIENT_SECRET: ${{secrets.TF_ARM_CLIENT_SECRET}}
