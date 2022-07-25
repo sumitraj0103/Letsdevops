@@ -6,8 +6,15 @@ name: 'Deploy-Infrastructure-TerraformIAC'
 
 on:
   workflow_dispatch:
+    inputs:
+      #Name of your Source Cosmos DB
+      ENVIRONMENT:
+        description: 'Deployment Environment (Non-Prod/Pre-Prod/Prod)'
+        required: true
+        default: 'npr'
 jobs:
   Deploy-DEV:
+    if: ${{ github.event.inputs.ENVIRONMENT == 'Non-Prod' }}
     runs-on: ubuntu-latest
     environment: 'dev'
     env:
@@ -71,6 +78,7 @@ jobs:
    
   Deploy-UAT:
     runs-on: 'ubuntu-latest'
+    if: ${{ github.event.inputs.ENVIRONMENT == 'Pre-Prod' }}
     environment: 'uat'
     needs: [ Deploy-DEV ]
     env:
@@ -123,6 +131,7 @@ jobs:
        
   Deploy-PROD:
     runs-on: 'ubuntu-latest'
+    if: ${{ github.event.inputs.ENVIRONMENT == 'Prod' }}
     environment: 'prod'
     needs: [ Deploy-DEV, Deploy-UAT ]
     env:
