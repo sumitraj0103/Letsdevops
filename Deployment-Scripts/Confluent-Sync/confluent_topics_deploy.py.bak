@@ -18,6 +18,17 @@ from numpy import true_divide
 # target_cluster_id=os.environ.get("target_cluster_id")
 # topics_deploy=os.environ.get("topic_list")
 
+source_api_key= "SH5YGVQXM6QUU6K6"
+source_api_secret= "IrhB9FbMmjYjSAEL8iUV2PQ7RKr8D6g0s63OkrtzWyjIVW1Quaq3/KTIe/mY0QyZ"
+target_api_key= "TGI4F7733F3VVK23"
+target_api_secret= "Az3WpN1wG6tUsvQuhDjSiri8aFPTqnG7q0AL3E+BiBGsm3cxQfxiMD0UHwkKqOO6"
+source_server= "pkc-epwny.eastus.azure.confluent.cloud"
+target_server= "pkc-epwny.eastus.azure.confluent.cloud"
+source_cluster_id="lkc-380qx0"
+target_cluster_id="lkc-do8dn1"
+topics_deploy="srs-test1"
+topic_deletelist="srs-test1"
+=======
 source_api_key= os.environ.get("source_api_key")
 source_api_secret= os.environ.get("source_api_secret")
 target_api_key= os.environ.get("target_api_key")
@@ -31,7 +42,7 @@ topic_deletelist=os.environ.get("topic_deletelist")
 partitions_count=os.environ.get("partitions_count")
 replication_factor=os.environ.get("replication_factor")
 rentention_days=os.environ.get("rentention_days")
-
+>>>>>>> e84c86ae2848d6074022c2f217e21470ac6ece2b
 
 print("the list of topic to Delete",topic_deletelist)
 print("the list of topic to create",topics_deploy)

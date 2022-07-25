@@ -6,15 +6,29 @@ on:
     inputs:
       # Name of your Source Cosmos DB
       Environment:
-        description: 'Enviroment to Sync with npr-prp,prp-prd'
+        description: 'Enviroment --> npr-prp,prp-prd'
         required: true
         default: 'npr-prp'
-                  
       topic_list:
-        description: 'List of Topics to Deploy--> , separated or set full for all topic to Deploy'
+        description: 'Topics to Deploy--> , separated or set full for all topic to Deploy'
+        required: false
+        default: 'srs-test1,srstest2'
+      partitions_count:
+        description: 'Custom Partition Count else keep --> default'
         required: true
-        default: 'srs-test1'
-  
+        default: 'default'
+      replication_factor:
+        description: 'replication_factor else keep --> default'
+        required: false
+        default: 'default'
+      rentention_days:
+        description: 'Rentention Day of logs like- 7, 10. For Infinite -1'
+        required: false
+        default: 'default'
+      RemoveList:
+        description: 'Topics to Delete--> , separated for Multiple Value'
+        required: false
+        default: ''
 jobs:
   #############################################################
   # This is packaging up the files from Git to the Artifacts files
@@ -64,7 +78,7 @@ jobs:
       uses: Azure/get-keyvault-secrets@v1
       with:
         keyvault: ${{ env.keyVaultName-PRP }}
-        secrets: 'confluent-kafka-prp-key,confluent-kafka-prp-secretkey'
+        secrets: 'confluentcluster-kafka-prp-key,confluentcluster-kafka-prp-secretkey'
       id: ConfluentSecretActionPRP
   
     # Login to Azure
@@ -79,7 +93,7 @@ jobs:
       uses: Azure/get-keyvault-secrets@v1
       with:
         keyvault: ${{ env.keyVaultName-NPR }}
-        secrets: 'confluent-kafka-npr-key,confluent-kafka-npr-secretkey'
+        secrets: 'confluentcluster-kafka-npr-key,confluentcluster-kafka-npr-secretkey'
       id: ConfluentSecretActionNPR
       
     # Download Artifact: deployment-scripts
@@ -99,15 +113,19 @@ jobs:
        chmod +x $GITHUB_WORKSPACE/Deployment-Scripts/Confluent-Sync/confluent_topics_deploy.py
        python3 $GITHUB_WORKSPACE/Deployment-Scripts/Confluent-Sync/confluent_topics_deploy.py
       env:
-        source_api_key: ${{ steps.ConfluentSecretActionNPR.outputs.confluent-kafka-npr-key }}
-        source_api_secret: ${{ steps.ConfluentSecretActionNPR.outputs.confluent-kafka-npr-secretkey }}
-        target_api_key: ${{ steps.ConfluentSecretActionPRP.outputs.confluent-kafka-prp-key }}
-        target_api_secret: ${{ steps.ConfluentSecretActionPRP.outputs.confluent-kafka-prp-secretkey }}
+        source_api_key: ${{ steps.ConfluentSecretActionNPR.outputs.confluentcluster-kafka-npr-key }}
+        source_api_secret: ${{ steps.ConfluentSecretActionNPR.outputs.confluentcluster-kafka-npr-secretkey }}
+        target_api_key: ${{ steps.ConfluentSecretActionPRP.outputs.confluentcluster-kafka-prp-key }}
+        target_api_secret: ${{ steps.ConfluentSecretActionPRP.outputs.confluentcluster-kafka-prp-secretkey }}
         source_server: ${{ env.Confluent_Source_Server }}
         target_server: ${{ env.Confluent_Target_Server }}
         source_cluster_id: ${{ env.Confluent_Source_Cluster_Id }}
         target_cluster_id: ${{ env.Confluent_Target_Cluster_Id }}
         topic_list: ${{ github.event.inputs.topic_list }}
+        topic_deletelist: ${{ github.event.inputs.RemoveList }}
+        partitions_count: ${{ github.event.inputs.partitions_count }}
+        replication_factor: ${{ github.event.inputs.replication_factor }}
+        rentention_days: ${{ github.event.inputs.rentention_days }}
 
 #############################################################
 # Sync from PRP to PRD
@@ -172,12 +190,17 @@ jobs:
        chmod +x $GITHUB_WORKSPACE/Deployment-Scripts/Confluent-Sync/confluent_topics_deploy.py
        python3 $GITHUB_WORKSPACE/Deployment-Scripts/Confluent-Sync/confluent_topics_deploy.py
       env:
-        source_api_key: ${{ steps.ConfluentSecretActionNPR.outputs.confluent-kafka-prp-key }}
-        source_api_secret: ${{ steps.ConfluentSecretActionNPR.outputs.confluent-kafka-prp-secretkey }}
-        target_api_key: ${{ steps.ConfluentSecretActionPRP.outputs.confluent-kafka-prd-key }}
-        target_api_secret: ${{ steps.ConfluentSecretActionPRP.outputs.confluent-kafka-prd-secretkey }}
+        source_api_key: ${{ steps.ConfluentSecretActionNPR.outputs.confluentcluster-kafka-npr-key }}
+        source_api_secret: ${{ steps.ConfluentSecretActionNPR.outputs.confluentcluster-kafka-npr-secretkey }}
+        target_api_key: ${{ steps.ConfluentSecretActionPRP.outputs.confluentcluster-kafka-prp-key }}
+        target_api_secret: ${{ steps.ConfluentSecretActionPRP.outputs.confluentcluster-kafka-prp-secretkey }}
         source_server: ${{ env.Confluent_Source_Server }}
         target_server: ${{ env.Confluent_Target_Server }}
         source_cluster_id: ${{ env.Confluent_Source_Cluster_Id }}
         target_cluster_id: ${{ env.Confluent_Target_Cluster_Id }}
         topic_list: ${{ github.event.inputs.topic_list }}
+        topic_deletelist: ${{ github.event.inputs.RemoveList }}
+        partitions_count: ${{ github.event.inputs.partitions_count }}
+        replication_factor: ${{ github.event.inputs.replication_factor }}
+        rentention_days: ${{ github.event.inputs.rentention_days }}
+        
