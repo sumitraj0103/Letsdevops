@@ -12,7 +12,47 @@ on:
         description: 'Deployment Environment (Non-Prod/Pre-Prod/Prod)'
         required: true
         default: 'npr'
+      CreateWorkspace:
+        description: 'First Time Run -->Choose Yes'
+        required: true
+        default: 'no'
 jobs:
+  Create-Workspace:
+    if: ${{ github.event.inputs.CreateWorkspace == 'Yes' }}
+    runs-on: ubuntu-latest
+    env:
+      ARM_CLIENT_ID: ${{secrets.TF_ARM_CLIENT_ID}}
+      ARM_CLIENT_SECRET: ${{secrets.TF_ARM_CLIENT_SECRET}}
+      ARM_SUBSCRIPTION_ID: ${{secrets.TF_ARM_SUBSCRIPTION_ID}}
+      ARM_TENANT_ID: ${{secrets.TF_ARM_TENANT_ID}}
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      
+    
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      run: |
+        cd "$GITHUB_WORKSPACE/TerraformIAC/"
+        terraform init
+    - name: Terraform Create Workspace
+      run: |
+        cd "$GITHUB_WORKSPACE/TerraformIAC/"
+        terraform workspace new dev
+        terraform workspace new uat
+        terraform workspace new prod
+         
   Deploy-DEV:
     if: ${{ github.event.inputs.ENVIRONMENT == 'Non-Prod' }}
     runs-on: ubuntu-latest
@@ -50,18 +90,16 @@ jobs:
         #cd "$GITHUB_WORKSPACE/TerraformIAC/"
         #terraform fmt -check
     
-    - name: Terraform list Workspace
+    - name: Terraform seletc the Workspace
       run: |
         cd "$GITHUB_WORKSPACE/TerraformIAC/"
-        terraform workspace list
-   
         terraform workspace select dev
       
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       run: |
        cd "$GITHUB_WORKSPACE/TerraformIAC/"
-       terraform workspace select dev
+       
        terraform plan -var-file dev.tfvars
 
       # On push to main, build or change infrastructure according to Terraform configuration files
@@ -71,10 +109,10 @@ jobs:
        cd "$GITHUB_WORKSPACE/TerraformIAC/"
        terraform apply -auto-approve -var-file dev.tfvars
        
-    - name: Terraform destroy
-      run: |
-       cd "$GITHUB_WORKSPACE/TerraformIAC/"
-       terraform apply -destroy -var-file dev.tfvars -auto-approve
+#     - name: Terraform destroy
+#       run: |
+#        cd "$GITHUB_WORKSPACE/TerraformIAC/"
+#        terraform apply -destroy -var-file dev.tfvars -auto-approve
    
   Deploy-UAT:
     runs-on: 'ubuntu-latest'
@@ -123,10 +161,10 @@ jobs:
        cd "$GITHUB_WORKSPACE/TerraformIAC/"
        terraform apply -auto-approve -var-file uat.tfvars
       
-    - name: Terraform destroy
-      run: |
-       cd "$GITHUB_WORKSPACE/TerraformIAC/"
-       terraform apply -destroy -var-file uat.tfvars -auto-approve
+#     - name: Terraform destroy
+#       run: |
+#        cd "$GITHUB_WORKSPACE/TerraformIAC/"
+#        terraform apply -destroy -var-file uat.tfvars -auto-approve
        
   Deploy-PROD:
     runs-on: 'ubuntu-latest'
@@ -176,8 +214,8 @@ jobs:
        cd "$GITHUB_WORKSPACE/TerraformIAC/"
        terraform apply -auto-approve -var-file prod.tfvars
     
-    - name: Terraform destroy
-      run: |
-       cd "$GITHUB_WORKSPACE/TerraformIAC/"
-       terraform apply -destroy -var-file prod.tfvars -auto-approve
+#     - name: Terraform destroy
+#       run: |
+#        cd "$GITHUB_WORKSPACE/TerraformIAC/"
+#        terraform apply -destroy -var-file prod.tfvars -auto-approve
    
