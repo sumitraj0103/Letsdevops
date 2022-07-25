@@ -34,13 +34,13 @@ jobs:
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       run: |
-        cd "$GITHUB_WORKSPACE/Infrastructure-As-Code/"
+        cd "$GITHUB_WORKSPACE/TerraformIAC/"
         terraform init
 
     # Checks that all Terraform configuration files adhere to a canonical format
     #- name: Terraform Format
       #run: |
-        #cd "$GITHUB_WORKSPACE/Infrastructure-As-Code/"
+        #cd "$GITHUB_WORKSPACE/TerraformIAC/"
         #terraform fmt -check
     
     - name: Terraform list Workspace
