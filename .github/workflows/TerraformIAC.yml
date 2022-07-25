@@ -10,11 +10,11 @@ on:
       #Name of your Environment
       ENVIRONMENT:
         description: 'Deployment Environment (Non-Prod/Pre-Prod/Prod)'
-        required: true
-        default: 'Non-Prod'
+        required: false
+        default: ''
       CreateWorkspace:
-        description: 'First Time Run -->Choose Yes'
-        required: true
+        description: 'First Time Run: Create Workspace -->Choose Yes'
+        required: false
         default: 'no'
 jobs:
   Create-Workspace:
