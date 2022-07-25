@@ -7,11 +7,11 @@ name: 'Deploy-Infrastructure-TerraformIAC'
 on:
   workflow_dispatch:
     inputs:
-      #Name of your Source Cosmos DB
+      #Name of your Environment
       ENVIRONMENT:
         description: 'Deployment Environment (Non-Prod/Pre-Prod/Prod)'
         required: true
-        default: 'npr'
+        default: 'Non-Prod'
       CreateWorkspace:
         description: 'First Time Run -->Choose Yes'
         required: true
