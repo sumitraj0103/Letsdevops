@@ -1,0 +1,12 @@
+---
+- name: nginx insatll & start Service
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Change file ownership, group and permissions
+      ansible.builtin.file:
+    	path: /home/srs/sumit.log
+    	owner: foo
+    	group: foo
+    	mode: '0644'
