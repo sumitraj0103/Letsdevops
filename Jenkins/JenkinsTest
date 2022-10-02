@@ -8,5 +8,11 @@ pipeline {
                 echo "the url is ${params.giturl}"
             }
         }
+         stage('cloning the project from git'){
+          steps{
+              git branch: "main", url: "${params.giturl}"
+          }
+        }
     }
 }
+
