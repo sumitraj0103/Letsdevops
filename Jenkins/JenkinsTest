@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout the Repo') {
             steps {
                 echo 'Hello World'
-                echo "the url is ${params.giturl}"
+                echo "Build My solution using Repo"
             }
         }
     }
