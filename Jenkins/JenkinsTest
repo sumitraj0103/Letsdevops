@@ -1,0 +1,12 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout the Repo') {
+            steps {
+                echo 'Hello World'
+                echo "the url is ${params.giturl}"
+            }
+        }
+    }
+}
