@@ -4,8 +4,7 @@ pipeline {
     stages {
         stage('Checkout the Repo') {
             steps {
-                echo 'Hello World'
-                echo "Build My solution using Repo"
+                echo 'Welcome to Multi Repo Job'
             }
         }
          stage('cloning the project from git'){
