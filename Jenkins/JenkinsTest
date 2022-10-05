@@ -6,8 +6,8 @@ pipeline {
             steps {
                 echo 'Welcome to Multi Repo Job'
                 echo 'Branch Name ${params.branchName}'
-                echo 'Branch Name ${params.dockeruser}'
-                 echo 'Branch Name ${params.DockerPassword}'
+                echo 'Docker User ${params.dockeruser}'
+                echo 'Docker Password ${params.DockerPassword}'
             }
         }
          stage('cloning the project from git'){
