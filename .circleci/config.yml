@@ -15,12 +15,18 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "Say hello"
+          name: "PreBuild"
           command: "echo Hello, World!"
-
+      - run:
+          name: "Build"
+          command: "echo Hello, World!"
+      - run:
+          name: "PostBuild"
+          command: "echo Hello, World!"
+          
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  build-workflow:
+  Dev-Build:
     jobs:
       - build
