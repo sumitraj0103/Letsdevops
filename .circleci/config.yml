@@ -43,6 +43,6 @@ workflows:
   Dev-Build:
     jobs:
       - build
-      - test
+      - test:
           requires:
              - build
