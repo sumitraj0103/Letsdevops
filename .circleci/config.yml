@@ -24,7 +24,7 @@ jobs:
           name: "PostBuild"
           command: "echo Hello, World!"
       - run: echo "My first workspace" > my_workspace/echo-output
-      - persist_to_workspace
+      - persist_to_workspace:
           root: my_workspace
           paths: 
             - echo-output
