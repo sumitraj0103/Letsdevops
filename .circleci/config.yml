@@ -23,10 +23,26 @@ jobs:
       - run:
           name: "PostBuild"
           command: "echo Hello, World!"
-          
+      - run: echo "My first workspace" > my_workspace/echo-output
+      - persist_to_workspace
+          root: my_workspace
+          paths: 
+            - echo-output
+  test:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - run: echo "Hello I am in test job"
+      - attach_workspace:
+           at: my_workspace
+           
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
   Dev-Build:
     jobs:
       - build
+      - test
+          requires:
+             - build
