@@ -23,6 +23,7 @@ jobs:
       - run:
           name: "PostBuild"
           command: "echo Hello, World!"
+      - run: mkdir -p my_workspace
       - run: echo "My first workspace" > my_workspace/echo-output
       - persist_to_workspace:
           root: my_workspace
