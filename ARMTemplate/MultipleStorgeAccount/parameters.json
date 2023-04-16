@@ -1,0 +1,90 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "eastus"
+        },
+        "storageAccountName": {
+            "value": "srstest0103#{stnumber}#"
+        },
+        "accountType": {
+            "value": "Standard_RAGRS"
+        },
+        "kind": {
+            "value": "StorageV2"
+        },
+        "minimumTlsVersion": {
+            "value": "TLS1_2"
+        },
+        "supportsHttpsTrafficOnly": {
+            "value": true
+        },
+        "allowBlobPublicAccess": {
+            "value": true
+        },
+        "allowSharedKeyAccess": {
+            "value": true
+        },
+        "defaultOAuth": {
+            "value": false
+        },
+        "accessTier": {
+            "value": "Hot"
+        },
+        "publicNetworkAccess": {
+            "value": "Enabled"
+        },
+        "allowCrossTenantReplication": {
+            "value": true
+        },
+        "networkAclsBypass": {
+            "value": "AzureServices"
+        },
+        "networkAclsDefaultAction": {
+            "value": "Allow"
+        },
+        "dnsEndpointType": {
+            "value": "Standard"
+        },
+        "keySource": {
+            "value": "Microsoft.Storage"
+        },
+        "encryptionEnabled": {
+            "value": true
+        },
+        "keyTypeForTableAndQueueEncryption": {
+            "value": "Account"
+        },
+        "infrastructureEncryptionEnabled": {
+            "value": false
+        },
+        "isContainerRestoreEnabled": {
+            "value": false
+        },
+        "isBlobSoftDeleteEnabled": {
+            "value": true
+        },
+        "blobSoftDeleteRetentionDays": {
+            "value": 7
+        },
+        "isContainerSoftDeleteEnabled": {
+            "value": true
+        },
+        "containerSoftDeleteRetentionDays": {
+            "value": 7
+        },
+        "changeFeed": {
+            "value": false
+        },
+        "isVersioningEnabled": {
+            "value": false
+        },
+        "isShareSoftDeleteEnabled": {
+            "value": true
+        },
+        "shareSoftDeleteRetentionDays": {
+            "value": 7
+        }
+    }
+}
