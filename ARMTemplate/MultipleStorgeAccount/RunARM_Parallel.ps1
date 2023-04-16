@@ -19,16 +19,13 @@ for($i=1; $i -le $itemcount; $i++){
       #Create New param file with
       $newjsonPath=$ParameterFileBase+"/$i"+"_param.json"
       if(Test-Path -Path $newjsonPath){
-
           write-host "File Already exist No Need to Create"
       }
       else{
-
         New-Item -Path $newjsonPath -ItemType File
       }
       #updating the Content 
       $updatebatchcount | Set-Content -Path $newjsonPath
-    
       # Creating Job wth ARM deployment
       $job = Start-Job -ScriptBlock {
         New-AzResourceGroupDeployment -Name $args[0] -ResourceGroupName $args[1] -TemplateFile $args[2] -TemplateParameterFile $args[3] -Mode Incremental -Force
