@@ -1,0 +1,23 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+
+        "Stname":{
+            "value": "stsrsdemo"
+        },
+        "stlocation":{
+            "value": "North Europe"
+        },
+        "stsku":{
+            "value": "Standard_LRS"
+        },
+        "stproperties":{
+            "value": {
+                "accessTier": "Cool",
+                "allowBlobPublicAccess":true
+            }
+        }
+
+    }
+  }
