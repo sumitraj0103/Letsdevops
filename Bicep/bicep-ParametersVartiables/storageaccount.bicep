@@ -5,6 +5,8 @@
 @secure()
 param stname string //= 'stdemo01031'
 
+var storageName = '${toLower(stname)}${uniqueString(resourceGroup().id)}'
+
 @description('Allowed region where storage account needs to be created')
 @allowed([
 
@@ -25,7 +27,7 @@ param stsku string //= 'Standard_LRS'
 param stproperties object
 
 resource stdemo 'Microsoft.Storage/storageAccounts@2022-09-01' ={
-  name: stname
+  name: storageName
   kind: 'BlobStorage'
   location: stlocation
   sku: {
@@ -39,3 +41,4 @@ resource stdemo 'Microsoft.Storage/storageAccounts@2022-09-01' ={
   // }
 
 }
+output stoutput string = storageName
