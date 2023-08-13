@@ -1,0 +1,19 @@
+parameters:
+  - name: Buildtype
+    type: string
+jobs:
+- job:
+  pool: '$(windows_pool)'
+  steps:
+   - bash: "Build Application on Windows"
+   - bash: "Publish Artifact"
+- job:
+  pool: '$(linux_pool)'
+  steps:
+   - bash: "Build Application on Linux"
+   - bash: "Publish Artifact"
+- job:
+  pool: '$(mac_pool)'
+  steps:
+   - bash: "Build Application on Mac"
+   - bash: "Publish Artifact"

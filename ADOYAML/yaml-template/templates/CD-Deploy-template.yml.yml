@@ -1,0 +1,28 @@
+---
+parameters:
+  - name: env
+    type: string
+  - name: condition
+    type: string
+  - name: dependsOn
+    type: string
+stages:
+  - stage: ${{ parameters.env }}
+    condition: ${{ parameters.condition }}
+    dependsOn: ${{ parameters.dependsOn }}
+    jobs:
+      - job: deploy_application
+        displayName: Deployt the Application
+        pool: '$(windows_pool)'
+        steps:
+          - template: templates/Deploy-Apps.yml # step template reference
+
+      - job: smoke_test
+        displayName: Run Smoke Test
+        pool: '$(windows_pool)'
+        dependsOn: deploy_application
+        condition: in(dependencies.deploy_application.result, 'Succeeded')
+        steps:
+          - bash: echo "Run Smoke test"
+          - bash: echo "Send the Notification"
+...

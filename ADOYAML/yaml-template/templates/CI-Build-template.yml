@@ -1,0 +1,33 @@
+---
+parameters:
+  - name: Buildtype
+    type: string
+stages:
+  - stage: build
+    variables:
+      - group: ${{ parameters.variableGroup }}
+    jobs:
+      - job: 'CredScan'
+        displayName: CredScan
+        pool: '$(Windows_pool)'
+        steps:
+          - bash: echo "Cred Scan"
+
+      - job: sonarqube
+        displayName: 'Prepare Analysis on SonarQube'
+        pool: '$(Linux_pool)'
+        steps:
+          - bash: echo "Scan the Code"
+
+      - job: NexusIQ
+        displayName: NexusIQ
+        pool: '$(Linux_pool)'
+        steps:
+          - bash: echo "Scan through Nexus"
+
+      - template: templates/Build-Publish-Apps.yml  # Job Template Reference
+        parameters:
+          Buildtype: ${{ parameters.Buildtype }}
+          
+        
+...

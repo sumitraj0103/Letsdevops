@@ -1,0 +1,5 @@
+variables:
+  NETVersion: '4.8.1'
+  linux_pool: 'linux-pool'
+  windows_pool: 'windows-pool'
+  mac_pool: 'mac-pool'
