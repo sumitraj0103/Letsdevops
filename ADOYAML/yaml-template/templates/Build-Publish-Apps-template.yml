@@ -2,18 +2,27 @@ parameters:
   - name: Buildtype
     type: string
 jobs:
-- job:
+- job: BuildOnWindows
   pool: '$(windows_pool)'
   steps:
-   - bash: "Build Application on Windows"
-   - bash: "Publish Artifact"
-- job:
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+            write-host "Build the Application On windows"
+- job: BuildOnLinux
   pool: '$(linux_pool)'
   steps:
-   - bash: "Build Application on Linux"
-   - bash: "Publish Artifact"
-- job:
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+            write-host "Build the Application On Linux"
+- job: BuildOnMac
   pool: '$(mac_pool)'
   steps:
-   - bash: "Build Application on Mac"
-   - bash: "Publish Artifact"
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+            write-host "Build the Application On Mac"

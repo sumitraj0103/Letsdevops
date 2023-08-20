@@ -4,28 +4,42 @@ parameters:
     type: string
 stages:
   - stage: build
-    variables:
-      - group: ${{ parameters.variableGroup }}
+    # variables:
+    #   - group: ${{ parameters.variableGroup }}
     jobs:
-      - job: 'CredScan'
-        displayName: CredScan
+      - job: 'ScanningCredential'
+        displayName: ScanningCredential
         pool: '$(Windows_pool)'
         steps:
-          - bash: echo "Cred Scan"
+          - task: PowerShell@2
+            inputs:
+              targetType: 'inline'
+              script: |
+                write-host "Setup for Scanning Credential/Token/Secret"
 
       - job: sonarqube
         displayName: 'Prepare Analysis on SonarQube'
         pool: '$(Linux_pool)'
         steps:
-          - bash: echo "Scan the Code"
+          - task: PowerShell@2
+            inputs:
+              targetType: 'inline'
+              script: |
+               write-host "Setup for Code Analysis"
+
 
       - job: NexusIQ
         displayName: NexusIQ
         pool: '$(Linux_pool)'
         steps:
-          - bash: echo "Scan through Nexus"
+          - task: PowerShell@2
+            inputs:
+              targetType: 'inline'
+              script: |
+                write-host "Setup for SCA & SAST Scan"
 
-      - template: templates/Build-Publish-Apps.yml  # Job Template Reference
+
+      - template: Build-Publish-Apps-template.yml  # Job Template Reference
         parameters:
           Buildtype: ${{ parameters.Buildtype }}
           

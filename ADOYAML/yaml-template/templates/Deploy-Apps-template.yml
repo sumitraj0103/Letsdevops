@@ -1,5 +1,7 @@
 # File: templates/npm-steps.yml
 steps:
-  - bash: echo "Download the Artifact"
-  - bash: echo "Validate the Artifact"
-  - bash: echo "Deploy the File"
+  - task: PowerShell@2
+    inputs:
+      targetType: 'inline'
+      script: |
+          write-host "Hello World"

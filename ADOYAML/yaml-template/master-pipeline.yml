@@ -1,44 +1,48 @@
----
 trigger: none
 
 parameters:
   - name: buildtype
     displayName: "Application build type (default is release)"
     type: string
-    default: bedug
+    default: debug
 
 variables:
+- template: app-var-template.yml
   #######################
   ##  GLOBAL VARIABLES ##
   #######################
-  onMainBranch: ${{ eq(variables['Build.SourceBranchName'], 'main') }}
-  System.Debug: 'true'
+  # onMainBranch: ${{ eq(variables['Build.SourceBranchName'], 'main') }}
+  # System.Debug: 'true'
+  # NETVersion: '4.8.1'
+  # Linux_pool: 'Default'
+  # Windows_pool: 'Default'
+  # mac_pool: 'Default'
   ########################
   ##   APP & AGENT VARIABLES    ##
   ########################
-  - template: app-var-template.yml  # Variable Template reference
+  # Variable Template reference
 
 stages:
   - template: templates/CI-Build-template.yml # stage template reference
     parameters:
       Buildtype: $(buildtype)
 
-  - template: ./templates/CD-Deploy-template.yml # stage template reference
+  - template: templates/CD-Deploy-template.yml # stage template reference
     parameters:
       env: 'dev'
       condition: succeeded()
       dependsOn: build
 
-  - template: ./templates/CD-Deploy-template.yml # stage template reference
+  - template: templates/CD-Deploy-template.yml # stage template reference
     parameters:
       env: 'test'
-      condition: succeeded() and(eq(variables['onMainBranch'], 'true'), succeeded())
+      condition: succeeded() #and(eq(variables['onMainBranch'], 'true'), succeeded())
       dependsOn: dev
       
-  - template: ./templates/CD-Deploy-template.yml # stage template reference
+  - template: templates/CD-Deploy-template.yml # stage template reference
     parameters:
       env: 'prod'
-      condition: succeeded() and(eq(variables['onMainBranch'], 'true'), succeeded())
+      condition: succeeded() #and(eq(variables['onMainBranch'], 'true'), succeeded())
       dependsOn: test
     
 ...
