@@ -22,15 +22,16 @@ jobs:
     - run: |
        cd ${GITHUB_WORKSPACE}/ContainerApp/demoApp
        docker build . --file Dockerfile -t ${{ secrets.acrserver }}/srstest:${{ github.sha }}
+       docker push ${{ secrets.acrserver }}/srstest:${{ github.sha }}
        
-    - name: Azure Container Registry Login
-      uses: Azure/docker-login@v1
-      with:
-        # Container registry username
-        username: ${{ secrets.acrlogin }}
-        # Container registry password
-        password: ${{ secrets.acrpassword }}
-        # Container registry server url
-        login-server: ${{ secrets.acrserver }}
-    - run: |
-        docker push ${{ secrets.acrserver }}/srstest:${{ github.sha }}
+    # - name: Azure Container Registry Login
+    #   uses: Azure/docker-login@v1
+    #   with:
+    #     # Container registry username
+    #     username: ${{ secrets.acrlogin }}
+    #     # Container registry password
+    #     password: ${{ secrets.acrpassword }}
+    #     # Container registry server url
+    #     login-server: ${{ secrets.acrserver }}
+    # - run: |
+    #     docker push ${{ secrets.acrserver }}/srstest:${{ github.sha }}
