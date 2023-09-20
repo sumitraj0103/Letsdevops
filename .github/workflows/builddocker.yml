@@ -14,3 +14,13 @@ jobs:
       run: |
        cd ${GITHUB_WORKSPACE}/ContainerApp/demoApp
        docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+       
+    - name: Azure Container Registry Login
+      uses: Azure/docker-login@v1
+      with:
+        # Container registry username
+        username: # default is 
+        # Container registry password
+        password: # default is 
+        # Container registry server url
+        login-server: # default is https://index.docker.io/v1/
