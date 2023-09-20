@@ -10,10 +10,18 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: |
+    - name: Azure Container Registry login and build
+      uses: Azure/docker-login@v1
+      with:
+        # Container registry username
+        username: ${{ secrets.acrlogin }}
+        # Container registry password
+        password: ${{ secrets.acrpassword }}
+        # Container registry server url
+        login-server: ${{ secrets.acrserver }}
+    - run: |
        cd ${GITHUB_WORKSPACE}/ContainerApp/demoApp
-       docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+       docker build . --file Dockerfile -t ${{ secrets.acrserver }}/srstest:${{ github.sha }}
        
     - name: Azure Container Registry Login
       uses: Azure/docker-login@v1
@@ -25,4 +33,4 @@ jobs:
         # Container registry server url
         login-server: ${{ secrets.acrserver }}
     - run: |
-        docker push ${{ secrets.acrserver }}/my-image-name:$(date +%s)
+        docker push ${{ secrets.acrserver }}/srstest:${{ github.sha }}
