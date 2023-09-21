@@ -22,6 +22,7 @@ jobs:
     - run: |
        chmod +x ${GITHUB_WORKSPACE}/ContainerApp/demoApp/increment_version.sh
        NEW_VERSION=$(./ContainerApp/demoApp/increment_version.sh)
+       echo "The new version is $NEW_VERSION"
        cd ${GITHUB_WORKSPACE}/ContainerApp/demoApp
        docker build . --file Dockerfile -t ${{ secrets.acrserver }}/srstest:v$NEW_VERSION
        docker push ${{ secrets.acrserver }}/srstest:v$NEW_VERSION
