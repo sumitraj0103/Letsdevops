@@ -20,7 +20,7 @@ jobs:
         # Container registry server url
         login-server: ${{ secrets.acrserver }}
     - run: |
-       RUN chmod +x ${GITHUB_WORKSPACE}/ContainerApp/increment_version.sh
+       chmod +x ${GITHUB_WORKSPACE}/ContainerApp/increment_version.sh
        NEW_VERSION=$(./ContainerApp/increment_version.sh)
        cd ${GITHUB_WORKSPACE}/ContainerApp/demoApp
        docker build . --file Dockerfile -t ${{ secrets.acrserver }}/srstest:v$NEW_VERSION
