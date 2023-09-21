@@ -33,8 +33,11 @@ jobs:
       uses: aquasecurity/trivy-action@master
       with:
           image-ref: '${{ secrets.acrserver }}/srstest:${{ github.sha }}'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL'
        
     - name: Push the Image
       run: |
