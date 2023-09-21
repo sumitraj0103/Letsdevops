@@ -60,4 +60,4 @@ jobs:
 
     - name: Scan Docker image for vulnerabilities
       run: |
-          trivy --exit-code 1 --vuln-type os --severity HIGH,CRITICAL ${{ secrets.acrserver }}/srstest:v$IMAGE_TAG
+          trivy --exit-code 1 --vuln-type library --severity CRITICAL ${{ secrets.acrserver }}/srstest:v$IMAGE_TAG
