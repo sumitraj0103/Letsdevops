@@ -51,4 +51,13 @@ jobs:
        docker push ${{ secrets.acrserver }}/srstest:v$NEW_VERSION
        #docker push ${{ secrets.acrserver }}/srstest:v$IMAGE_TAG
        
+    - name: Install Trivy
+      run: |
+          wget https://github.com/aquasecurity/trivy/releases/download/v0.20.1/trivy_0.20.1_Linux-64bit.tar.gz
+          tar zxvf trivy_0.20.1_Linux-64bit.tar.gz
+          sudo mv trivy /usr/local/bin/
+          trivy --version
 
+    - name: Scan Docker image for vulnerabilities
+      run: |
+          trivy --exit-code 1 --severity HIGH,CRITICAL ${{ secrets.acrserver }}/srstest:${{ github.sha }}
