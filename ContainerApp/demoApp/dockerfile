@@ -1,2 +1,3 @@
 FROM httpd
+LABEL version="$(cat version.txt)"
 COPY . /usr/local/apache2/htdocs/
