@@ -30,6 +30,9 @@ jobs:
 
     - name: Push the container
       run: |
+       cd ${GITHUB_WORKSPACE}/ContainerApp/demoApp
+       chmod +x increment_version.sh
+       NEW_VERSION=$(./increment_version.sh)
        docker push ${{ secrets.acrserver }}/srstest:v$NEW_VERSION
        
     # - name: Azure Container Registry Login
