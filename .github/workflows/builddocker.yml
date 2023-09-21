@@ -19,8 +19,7 @@ jobs:
         password: ${{ secrets.acrpassword }}
         # Container registry server url
         login-server: ${{ secrets.acrserver }}
-    - name: Build the Container
-      run: |
+    - run: |
        cd ${GITHUB_WORKSPACE}/ContainerApp/demoApp
        chmod +x increment_version.sh
        NEW_VERSION=$(./increment_version.sh)
@@ -28,12 +27,23 @@ jobs:
        echo "IMAGE_TAG=$NEW_VERSION" >> $GITHUB_ENV
        echo "the update version is ===============$NEW_VERSION"
        docker build . --file Dockerfile -t ${{ secrets.acrserver }}/srstest:v$IMAGE_TAG
-
-    - name: Push the container
-      run: |
+       
+    - name: Azure Container Registry login and build
+      uses: Azure/docker-login@v1
+      with:
+        # Container registry username
+        username: ${{ secrets.acrlogin }}
+        # Container registry password
+        password: ${{ secrets.acrpassword }}
+        # Container registry server url
+        login-server: ${{ secrets.acrserver }}
+    - run: |
        cd ${GITHUB_WORKSPACE}/ContainerApp/demoApp
        chmod +x increment_version.sh
        NEW_VERSION=$(./increment_version.sh)
+       echo "The new version is $NEW_VERSION"
+       echo "IMAGE_TAG=$NEW_VERSION" >> $GITHUB_ENV
+       echo "the update version is ===============$NEW_VERSION"
        docker push ${{ secrets.acrserver }}/srstest:v$IMAGE_TAG
        
     # - name: Azure Container Registry Login
