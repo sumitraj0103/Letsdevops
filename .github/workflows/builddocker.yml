@@ -20,14 +20,14 @@ jobs:
         # Container registry server url
         login-server: ${{ secrets.acrserver }}
     - run: |
-       chmod +x ${GITHUB_WORKSPACE}/ContainerApp/demoApp/increment_version.sh
-       NEW_VERSION=$(./ContainerApp/demoApp/increment_version.sh)
+       cd ${GITHUB_WORKSPACE}/ContainerApp/demoApp
+       chmod +x increment_version.sh
+       NEW_VERSION=$(./increment_version.sh)
        echo "The new version is $NEW_VERSION"
        echo "the update version is ===============$NEW_VERSION"
        REV_TAG=$(git log -1 --pretty=format:%h)
-       cd ${GITHUB_WORKSPACE}/ContainerApp/demoApp
-       docker build . --file Dockerfile -t ${{ secrets.acrserver }}/srstest:v$REV_TAG
-       docker push ${{ secrets.acrserver }}/srstest:v$REV_TAG
+       docker build . --file Dockerfile -t ${{ secrets.acrserver }}/srstest:v$NEW_VERSION
+       docker push ${{ secrets.acrserver }}/srstest:v$NEW_VERSION
        
     # - name: Azure Container Registry Login
     #   uses: Azure/docker-login@v1
