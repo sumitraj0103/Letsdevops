@@ -45,7 +45,7 @@ jobs:
        echo "IMAGE_TAG=$NEW_VERSION" >> $GITHUB_ENV
        echo "the update version is ===============$NEW_VERSION"
        docker build . --file Dockerfile -t ${{ secrets.acrserver }}/srstest:v$NEW_VERSION
-       docker push . --file Dockerfile -t ${{ secrets.acrserver }}/srstest:v$NEW_VERSION
+       docker push ${{ secrets.acrserver }}/srstest:v$NEW_VERSION
        #docker push ${{ secrets.acrserver }}/srstest:v$IMAGE_TAG
        
 
