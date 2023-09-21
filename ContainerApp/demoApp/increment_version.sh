@@ -15,4 +15,4 @@ NEW_VERSION=$(awk '{printf "%.1f", $0 + 0.1}' <<< "$CURRENT_VERSION")
 echo "$NEW_VERSION" > "$VERSION_FILE"
 
 # Print the new version
-echo "the new version value in Sumit$NEW_VERSION"
+echo "$NEW_VERSION"
