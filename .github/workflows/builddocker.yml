@@ -25,15 +25,16 @@ jobs:
        chmod +x increment_version.sh
        NEW_VERSION=$(./increment_version.sh)
        echo "The new version is $NEW_VERSION"
+       echo "IMAGE_TAG=$NEW_VERSION" >> $GITHUB_ENV
        echo "the update version is ===============$NEW_VERSION"
-       docker build . --file Dockerfile -t ${{ secrets.acrserver }}/srstest:v$NEW_VERSION
+       docker build . --file Dockerfile -t ${{ secrets.acrserver }}/srstest:v$IMAGE_TAG
 
     - name: Push the container
       run: |
        cd ${GITHUB_WORKSPACE}/ContainerApp/demoApp
        chmod +x increment_version.sh
        NEW_VERSION=$(./increment_version.sh)
-       docker push ${{ secrets.acrserver }}/srstest:v$NEW_VERSION
+       docker push ${{ secrets.acrserver }}/srstest:v$IMAGE_TAG
        
     # - name: Azure Container Registry Login
     #   uses: Azure/docker-login@v1
