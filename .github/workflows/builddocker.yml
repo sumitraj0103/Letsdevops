@@ -20,9 +20,10 @@ jobs:
         # Container registry server url
         login-server: ${{ secrets.acrserver }}
     - run: |
+       NEW_VERSION=$(./increment_version.sh)
        cd ${GITHUB_WORKSPACE}/ContainerApp/demoApp
-       docker build . --file Dockerfile -t ${{ secrets.acrserver }}/srstest:${{ github.sha }}
-       docker push ${{ secrets.acrserver }}/srstest:${{ github.sha }}
+       docker build . --file Dockerfile -t ${{ secrets.acrserver }}/srstest:v$NEW_VERSION
+       docker push ${{ secrets.acrserver }}/srstest:v$NEW_VERSION
        
     # - name: Azure Container Registry Login
     #   uses: Azure/docker-login@v1
