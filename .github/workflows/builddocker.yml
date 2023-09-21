@@ -27,7 +27,7 @@ jobs:
        echo "The new version is $NEW_VERSION"
        echo "IMAGE_TAG=$NEW_VERSION" >> $GITHUB_ENV
        echo "the update version is ===============$NEW_VERSION"
-       docker build . --file Dockerfile -t ${{ secrets.acrserver }}/srstest:$NEW_VERSION
+       docker build . --file Dockerfile -t ${{ secrets.acrserver }}/srstest:v$NEW_VERSION
        
     # - name: Run Trivy vulnerability scanner
     #   uses: aquasecurity/trivy-action@master
