@@ -27,29 +27,18 @@ jobs:
        echo "The new version is $NEW_VERSION"
        echo "IMAGE_TAG=$NEW_VERSION" >> $GITHUB_ENV
        echo "the update version is ===============$NEW_VERSION"
-       docker build . --file Dockerfile -t ${{ secrets.acrserver }}/srstest:${{ github.sha }}
+       docker build . --file Dockerfile -t ${{ secrets.acrserver }}/srstest:$NEW_VERSION
        
-    - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@master
-      with:
-          image-ref: '${{ secrets.acrserver }}/srstest:${{ github.sha }}'
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL'
+    # - name: Run Trivy vulnerability scanner
+    #   uses: aquasecurity/trivy-action@master
+    #   with:
+    #       image-ref: '${{ secrets.acrserver }}/srstest:${{ github.sha }}'
+    #       format: 'table'
+    #       exit-code: '1'
+    #       ignore-unfixed: true
+    #       vuln-type: 'os,library'
+    #       severity: 'CRITICAL'
        
-    - name: Push the Image
-      run: |
-       cd ${GITHUB_WORKSPACE}/ContainerApp/demoApp
-       chmod +x increment_version.sh
-       NEW_VERSION=$(./increment_version.sh)
-       echo "The new version is $NEW_VERSION"
-       echo "IMAGE_TAG=$NEW_VERSION" >> $GITHUB_ENV
-       echo "the update version is ===============$NEW_VERSION"
-       docker build . --file Dockerfile -t ${{ secrets.acrserver }}/srstest:v$NEW_VERSION
-       docker push ${{ secrets.acrserver }}/srstest:v$NEW_VERSION
-       #docker push ${{ secrets.acrserver }}/srstest:v$IMAGE_TAG
        
     - name: Install Trivy
       run: |
@@ -62,3 +51,7 @@ jobs:
       run: |
           trivy --exit-code 1 --vuln-type library --severity CRITICAL ${{ secrets.acrserver }}/srstest:v$IMAGE_TAG
           #https://aquasecurity.github.io/trivy/v0.22.0/getting-started/cli/image/
+
+    - name: Push the Image
+      run: |
+          docker push ${{ secrets.acrserver }}/srstest:v$IMAGE_TAG
