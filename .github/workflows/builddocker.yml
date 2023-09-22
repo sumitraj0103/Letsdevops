@@ -3,14 +3,11 @@ name: Docker Image CI
 on:
   workflow_dispatch:
 jobs:
-
-  build:
-
+  Build-Scan-Publish-Image:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
-    - name: Azure Container Registry login and build
+    - name: Login to ACR Azure Container Registry
       uses: Azure/docker-login@v1
       with:
         # Container registry username
@@ -19,6 +16,7 @@ jobs:
         password: ${{ secrets.acrpassword }}
         # Container registry server url
         login-server: ${{ secrets.acrserver }}
+        
     - name: Build the Image
       run: |
        cd ${GITHUB_WORKSPACE}/ContainerApp/demoApp
@@ -27,20 +25,9 @@ jobs:
        echo "The new version is $NEW_VERSION"
        echo "IMAGE_TAG=$NEW_VERSION" >> $GITHUB_ENV
        echo "the update version is ===============$NEW_VERSION"
-       docker build . --file Dockerfile -t ${{ secrets.acrserver }}/srstest:v$NEW_VERSION
+       docker build . --file Dockerfile -t ${{ secrets.acrserver }}/srstest:v$NEW_VERSION       
        
-    # - name: Run Trivy vulnerability scanner
-    #   uses: aquasecurity/trivy-action@master
-    #   with:
-    #       image-ref: '${{ secrets.acrserver }}/srstest:${{ github.sha }}'
-    #       format: 'table'
-    #       exit-code: '1'
-    #       ignore-unfixed: true
-    #       vuln-type: 'os,library'
-    #       severity: 'CRITICAL'
-       
-       
-    - name: Install Trivy
+    - name: Install Trivy Scan Tool
       run: |
           wget https://github.com/aquasecurity/trivy/releases/download/v0.20.1/trivy_0.20.1_Linux-64bit.tar.gz
           tar zxvf trivy_0.20.1_Linux-64bit.tar.gz
@@ -52,6 +39,6 @@ jobs:
           trivy --exit-code 1 --vuln-type library --severity CRITICAL ${{ secrets.acrserver }}/srstest:v$IMAGE_TAG
           #https://aquasecurity.github.io/trivy/v0.22.0/getting-started/cli/image/
 
-    - name: Push the Image
+    - name: Push the Image if no vulnerabilities
       run: |
           docker push ${{ secrets.acrserver }}/srstest:v$IMAGE_TAG
