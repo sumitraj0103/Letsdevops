@@ -1,0 +1,47 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+stages:
+  - stage: Build
+    jobs:
+      - job: A
+        steps:
+         - bash: 
+            echo "I am Step 1"
+           name: setupVar
+         - bash: |
+            echo "I am step 2"
+            echo "Check if the AKS has deployment"
+            isdeployed="I am ready to Upgrade"
+            echo "Setup the task variable DeploymentCheck with value isdeployed"
+            echo "##vso[task.setvariable variable=DeploymentCheck;isOutput=true]$isdeployed"
+           name: DeploymentMessage
+         - bash: 
+            echo "I am step 3"
+            echo "the defined variable value is $(DeploymentMessage.DeploymentCheck)"
+          
+      - job: B
+        dependsOn: A
+        variables: 
+          outputCheckDeployment: $[ dependencies.A.outputs['DeploymentMessage.DeploymentCheck'] ]
+        steps:
+          - bash: 
+              echo "I am using the variable in same stage but in different Job"
+              echo " The Output variable is $(outputCheckDeployment)"
+
+  - stage: Deploy
+    dependsOn: Build
+    jobs:
+    - job: C
+      variables:
+        varibalestageacross: $[ stageDependencies.Build.A.outputs['DeploymentMessage.DeploymentCheck'] ]
+      steps:
+      - bash: 
+          echo "I am using the varibale in different Stage "
+          echo "The varibales across stage Value $(varibalestageacross)"
+
+
+    
+    
