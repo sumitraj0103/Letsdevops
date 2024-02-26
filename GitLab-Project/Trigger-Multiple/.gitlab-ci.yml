@@ -1,0 +1,16 @@
+stages:
+    - triggers
+trigger-srstest:
+    stage: triggers
+    trigger:
+        include: srstest/.gitlab-ci.yml
+    rules:
+        - changes:
+            - srstest/**/*
+trigger-srstest2:
+    stage: triggers
+    trigger:
+        include: srstest2/.gitlab-ci.yml
+    rules:
+        - changes:
+            - srstest2/**/*

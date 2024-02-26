@@ -1,0 +1,11 @@
+
+stages:
+  - build
+
+image: alpine
+
+build_a:
+  stage: build
+  script:
+    - echo "This job builds something quickly."
+    - echo "I am in srstest"
