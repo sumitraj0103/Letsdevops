@@ -1,0 +1,68 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: windows-latest
+
+stages:
+- stage: Inspection_Stage_QC
+  jobs:
+  - job: Inspection_Deploy
+    steps:
+    - script: echo Hello, world!
+      displayName: 'Run a one-line script'
+
+    - script: |
+        echo Add other tasks to build, test, and deploy your project.
+        echo See https://aka.ms/yaml
+      displayName: 'Run a multi-line script'
+    - task: TerraformInstaller@1
+      inputs:
+        terraformVersion: 'latest'
+    - task: TerraformTaskV4@4
+      displayName: "Inspection-Terraform Init"
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/inspection'
+        commandOptions: '-reconfigure -backend-config ..\backend-stage.conf'
+        backendServiceArm: 'SC-DevOps-Azure-QC-Staging'
+        backendAzureRmResourceGroupName: 'rg-automation-qc-staging'
+        backendAzureRmStorageAccountName: 'sttfstateqcstage01'
+        backendAzureRmContainerName: 'qcstage-tfstate'
+        backendAzureRmKey: 'terraform.tfstate'
+
+    - task: TerraformTaskV4@4
+      displayName: "Inspection-Terraform Plan"
+      inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/inspection'
+        commandOptions: '-var-file .\non-prod.tfvars -lock=false'
+        environmentServiceNameAzureRM: 'SC-DevOps-Azure-QC-Staging'
+    - task: TerraformTaskV4@4
+      displayName: "Inspection-Terraform Apply"
+      #condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/inspection'
+        commandOptions: '-var-file .\non-prod.tfvars -lock=false'
+        environmentServiceNameAzureRM: 'SC-DevOps-Azure-QC-Staging'
+
+- stage: ITSM_Stage_QC
+  jobs:
+  - job: ITSM_Deploy
+    steps:
+    - script: echo Hello, world!
+      displayName: 'Run a one-line script'
+
+    - script: |
+        echo Add other tasks to build, test, and deploy your project.
+        echo See https://aka.ms/yaml
+      displayName: 'Run a multi-line script'
