@@ -7,21 +7,21 @@ on:
   workflow_dispatch:
     inputs: 
       source_databricks_url:
-        description: 'Workflow2 Name for Triggering'
+        description: 'Source Databricks URL'
         required: true
         default: 'Workflow2'
       
       source_token:
-        description: 'GitHub Account Owner'
+        description: 'Source Token'
         required: true
         default: 'sumitraj0103'
       
       target_databricks_url:
-        description: 'GitHub Repository Name'
+        description: 'Targte Databricks URL'
         required: true
         default: 'Letsdevops'
       target_token:
-        description: 'GitHub Repository Name'
+        description: 'Target Token'
         required: true
         default: 'Letsdevops'
         
