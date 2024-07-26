@@ -56,7 +56,7 @@ jobs:
          /usr/local/bin/terraform-provider-databricks exporter -skip-interactive \
          -services=groups,secrets,access,compute,users,jobs,storage \
          -listing=jobs,compute \
-         -directory export-output
+         -directory export-output \
          -debug
          
     - name: Set target Databricks workspace environment variables
