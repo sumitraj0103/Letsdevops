@@ -1,0 +1,85 @@
+name: Databricks Exporter and Terraform Deployment 2
+
+on:
+  workflow_dispatch:
+    inputs:
+      SOURCE_DATABRICKS_HOST:
+        description: 'Source Databricks URL'
+        required: true
+        default: 'https://<source-databricks-instance>'
+      SOURCE_DATABRICKS_TOKEN:
+        description: 'Source Databricks Token'
+        required: true
+      TARGET_DATABRICKS_HOST:
+        description: 'Target Databricks URL'
+        required: true
+        default: 'https://<target-databricks-instance>'
+      TARGET_DATABRICKS_TOKEN:
+        description: 'Target Databricks Token'
+        required: true
+
+jobs:
+  databricks-export:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: sudo apt-get install -y jq
+
+    - name: Download latest terraform-provider-databricks binary
+      run: |
+        LATEST_RELEASE=$(curl -s https://api.github.com/repos/databricks/terraform-provider-databricks/releases/latest | jq -r ".tag_name")
+        if [ -z "$LATEST_RELEASE" ]; then
+          echo "Failed to fetch the latest release tag"
+          exit 1
+        fi
+
+        # Remove 'v' prefix if it exists
+        if [[ $LATEST_RELEASE == v* ]]; then
+          VERSION=${LATEST_RELEASE:1}
+        else
+          VERSION=$LATEST_RELEASE
+        fi
+
+        wget https://github.com/databricks/terraform-provider-databricks/releases/download/${LATEST_RELEASE}/terraform-provider-databricks_${VERSION}_linux_amd64.zip -O databricks-provider.zip
+
+    - name: Unpack the binary
+      run: |
+        unzip databricks-provider.zip -d ./terraform-provider-databricks
+
+    - name: Move the binary to /usr/local/bin
+      run: |
+        BINARY_NAME=$(find ./terraform-provider-databricks -name 'terraform-provider-databricks_*' | head -n 1)
+        chmod +x $BINARY_NAME
+        mv $BINARY_NAME /usr/local/bin/terraform-provider-databricks
+
+    - name: Run exporter in non-interactive mode
+      env:
+        DATABRICKS_HOST: ${{ github.event.inputs.SOURCE_DATABRICKS_HOST }}
+        DATABRICKS_TOKEN: ${{ github.event.inputs.SOURCE_DATABRICKS_TOKEN }}
+      run: |
+        /usr/local/bin/terraform-provider-databricks exporter -skip-interactive \
+         -services=groups,secrets,access,compute,users,jobs,storage \
+         -listing=jobs,compute \
+         -directory output \
+         -debug
+
+    - name: Set target Databricks workspace environment variables
+      run: |
+        echo "DATABRICKS_HOST=${{ github.event.inputs.TARGET_DATABRICKS_HOST }}" >> $GITHUB_ENV
+        echo "DATABRICKS_TOKEN=${{ github.event.inputs.TARGET_DATABRICKS_TOKEN }}" >> $GITHUB_ENV
+
+    - name: Initialize Terraform
+      run: terraform init
+      working-directory: ./output # Adjust the path to where the config files are exported
+
+    - name: Plan Terraform
+      run: terraform plan -out=tfplan
+      working-directory: ./output # Adjust the path to where the config files are exported
+
+    - name: Apply Terraform
+      run: terraform apply -auto-approve tfplan
+      working-directory: ./output # Adjust the path to where the config files are exported
