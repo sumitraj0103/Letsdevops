@@ -31,8 +31,14 @@ jobs:
           echo "Failed to fetch the latest release tag"
           exit 1
         fi
-        wget https://github.com/databricks/terraform-provider-databricks/releases/download/${LATEST_RELEASE}/terraform-provider-databricks_${LATEST_RELEASE}_linux_amd64.zip -O databricks-provider.zip
 
+        # Remove 'v' prefix if it exists
+        if [[ $LATEST_RELEASE == v* ]]; then
+          VERSION=${LATEST_RELEASE:1}
+        else
+          VERSION=$LATEST_RELEASE
+        fi
+        wget https://github.com/databricks/terraform-provider-databricks/releases/download/${LATEST_RELEASE}/terraform-provider-databricks_${VERSION}_linux_amd64.zip -O databricks-provider.zip
     - name: Unpack the binary
       run: |
         unzip databricks-provider.zip -d ./terraform-provider-databricks
