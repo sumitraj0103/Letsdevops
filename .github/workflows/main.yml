@@ -58,15 +58,6 @@ jobs:
          -listing=jobs,compute \
          -debug
     
-    - name: Run exporter on account level
-      run: |
-        /usr/local/bin/terraform-provider-databricks exporter -skip-interactive
-    
-    - name: Export specific resources (users and groups)
-      run: |
-        /usr/local/bin/terraform-provider-databricks exporter -directory output \
-          -listing groups,users -skip-interactive
-
     - name: Set target Databricks workspace environment variables
       run: |
         echo "DATABRICKS_HOST=${{ secrets.TARGET_DATABRICKS_HOST }}" >> $GITHUB_ENV
