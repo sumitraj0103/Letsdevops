@@ -21,10 +21,17 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Install dependencies
+      run: sudo apt-get install -y jq
+
     - name: Download latest terraform-provider-databricks binary
       run: |
-        LATEST_RELEASE=$(curl -s https://api.github.com/repos/databrickslabs/terraform-provider-databricks/releases/latest | jq -r ".tag_name")
-        wget https://github.com/databrickslabs/terraform-provider-databricks/releases/download/${LATEST_RELEASE}/terraform-provider-databricks_${LATEST_RELEASE}_linux_amd64.zip -O databricks-provider.zip
+        LATEST_RELEASE=$(curl -s https://api.github.com/repos/databricks/terraform-provider-databricks/releases/latest | jq -r ".tag_name")
+        if [ -z "$LATEST_RELEASE" ]; then
+          echo "Failed to fetch the latest release tag"
+          exit 1
+        fi
+        wget https://github.com/databricks/terraform-provider-databricks/releases/download/${LATEST_RELEASE}/terraform-provider-databricks_${LATEST_RELEASE}_linux_amd64.zip -O databricks-provider.zip
 
     - name: Unpack the binary
       run: |
@@ -38,6 +45,15 @@ jobs:
          -listing=jobs,compute \
          -debug
     
+    - name: Run exporter on account level
+      run: |
+        ./terraform-provider-databricks exporter -skip-interactive
+    
+    - name: Export specific resources (users and groups)
+      run: |
+        ./terraform-provider-databricks exporter -directory output \
+          -listing groups,users -skip-interactive
+
     - name: Set target Databricks workspace environment variables
       run: |
         echo "DATABRICKS_HOST=${{ secrets.TARGET_DATABRICKS_HOST }}" >> $GITHUB_ENV
