@@ -69,9 +69,9 @@ jobs:
       working-directory: ./export-output
 
     - name: Plan Terraform
-      run: terraform plan
+      run: terraform plan -out=tfplan
       working-directory: ./export-output # Adjust the path to your Terraform configuration
 
     - name: Apply Terraform
-      run: terraform apply
+      run: terraform apply -auto-approve tfplan
       working-directory: ./export-output
