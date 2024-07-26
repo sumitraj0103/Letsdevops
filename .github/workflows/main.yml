@@ -1,12 +1,7 @@
 name: Databricks Exporter and Terraform Deployment
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+ workflow_dispatch:
 
 jobs:
   databricks-export:
