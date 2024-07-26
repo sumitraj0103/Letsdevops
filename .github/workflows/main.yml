@@ -53,11 +53,12 @@ jobs:
 
     - name: Run exporter in non-interactive mode
       run: |
-        /usr/local/bin/terraform-provider-databricks exporter -skip-interactive \
-         -services=compute,jobs,notebook,workspace \
+         /usr/local/bin/terraform-provider-databricks exporter -skip-interactive \
+         -services=groups,secrets,access,compute,users,jobs,storage \
+         -listing=jobs,compute \
          -directory export-output
          -debug
-    
+         
     - name: Set target Databricks workspace environment variables
       run: |
         echo "DATABRICKS_HOST=${{ secrets.TARGET_DATABRICKS_HOST }}" >> $GITHUB_ENV
