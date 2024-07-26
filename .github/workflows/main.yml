@@ -54,8 +54,8 @@ jobs:
     - name: Run exporter in non-interactive mode
       run: |
         /usr/local/bin/terraform-provider-databricks exporter -skip-interactive \
-         -services=groups,secrets,access,compute,users,jobs,storage \
-         -listing=jobs,compute \
+         -services=compute,jobs,notebook,workspace \
+         -directory export-output
          -debug
     
     - name: Set target Databricks workspace environment variables
@@ -65,12 +65,12 @@ jobs:
 
     - name: Initialize Terraform
       run: terraform init
-      working-directory: ./path-to-terraform-config # Adjust the path to your Terraform configuration
+      working-directory: ./export-output
 
     - name: Plan Terraform
-      run: terraform plan -out=tfplan
-      working-directory: ./path-to-terraform-config # Adjust the path to your Terraform configuration
+      run: terraform plan
+      working-directory: ./export-output # Adjust the path to your Terraform configuration
 
     - name: Apply Terraform
-      run: terraform apply -auto-approve tfplan
-      working-directory: ./path-to-terraform-config # Adjust the path to your Terraform configuration
+      run: terraform apply
+      working-directory: ./export-output
