@@ -1,52 +1,56 @@
-# This is a basic workflow to help you get started with Actions
+name: Databricks Exporter and Terraform Deployment
 
-name: Databricsimport
-
-# Controls when the workflow will run
 on:
-  workflow_dispatch:
-    inputs: 
-      source_databricks_url:
-        description: 'Source Databricks URL'
-        required: true
-        default: 'Workflow2'
-      
-      source_token:
-        description: 'Source Token'
-        required: true
-        default: 'sumitraj0103'
-      
-      target_databricks_url:
-        description: 'Targte Databricks URL'
-        required: true
-        default: 'Letsdevops'
-      target_token:
-        description: 'Target Token'
-        required: true
-        default: 'Letsdevops'
-        
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  databricks-export:
     runs-on: ubuntu-latest
-    env: 
-      pat_token: ${{ secrets.Workflow2_PAT_TOKEN_GITHUB }}
-      payload_Baseline_Number: "BSL_001"
-      payload_Baseline_Revision: "zsfdgsdbgngffdwdx1dxvv2"
+    
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+      DATABRICKS_ACCOUNT_ID: ${{ secrets.DATABRICKS_ACCOUNT_ID }}
+    
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+    - name: Download latest terraform-provider-databricks binary
+      run: |
+        LATEST_RELEASE=$(curl -s https://api.github.com/repos/databrickslabs/terraform-provider-databricks/releases/latest | jq -r ".tag_name")
+        wget https://github.com/databrickslabs/terraform-provider-databricks/releases/download/${LATEST_RELEASE}/terraform-provider-databricks_${LATEST_RELEASE}_linux_amd64.zip -O databricks-provider.zip
 
-      - name: setup python
-        uses: actions/setup-python@v2
-        with:
-         python-version: 3.8 #install the python needed
-         
-      - name: Install dependencies
-        run: |
-           cd "$GITHUB_WORKSPACE/Deployment-Scripts/"
-           python -m pip install --upgrade pip
-           pip install -r requirements.txt
+    - name: Unpack the binary
+      run: |
+        unzip databricks-provider.zip -d ./terraform-provider-databricks
+        mv ./terraform-provider-databricks/terraform-provider-databricks /usr/local/bin/
+
+    - name: Run exporter in non-interactive mode
+      run: |
+        ./terraform-provider-databricks exporter -skip-interactive \
+         -services=groups,secrets,access,compute,users,jobs,storage \
+         -listing=jobs,compute \
+         -debug
+    
+    - name: Set target Databricks workspace environment variables
+      run: |
+        echo "DATABRICKS_HOST=${{ secrets.TARGET_DATABRICKS_HOST }}" >> $GITHUB_ENV
+        echo "DATABRICKS_TOKEN=${{ secrets.TARGET_DATABRICKS_TOKEN }}" >> $GITHUB_ENV
+
+    - name: Initialize Terraform
+      run: terraform init
+      working-directory: ./path-to-terraform-config # Adjust the path to your Terraform configuration
+
+    - name: Plan Terraform
+      run: terraform plan -out=tfplan
+      working-directory: ./path-to-terraform-config # Adjust the path to your Terraform configuration
+
+    - name: Apply Terraform
+      run: terraform apply -auto-approve tfplan
+      working-directory: ./path-to-terraform-config # Adjust the path to your Terraform configuration
