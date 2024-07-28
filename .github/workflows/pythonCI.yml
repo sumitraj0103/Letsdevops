@@ -12,6 +12,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    outputs:
+      PACKAGE_VERSION: ${{ steps.set_version.outputs.package_version }}
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -28,11 +31,14 @@ jobs:
 
     - name: Set version
       id: set_version
-      run: echo "PACKAGE_VERSION=$(date +'%Y.%m.%d.%H%M%S')" >> $GITHUB_ENV
+      run: |
+        PACKAGE_VERSION=$(date +'%Y.%m.%d.%H%M%S')
+        echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
+        echo "::set-output name=package_version::$PACKAGE_VERSION"
 
     - name: Build wheel
       env:
-        PACKAGE_VERSION: ${{ env.PACKAGE_VERSION }}
+        PACKAGE_VERSION: ${{ steps.set_version.outputs.package_version }}
       run: |
         cd datascience_project/myfirst_project
         python setup.py sdist bdist_wheel
@@ -44,7 +50,7 @@ jobs:
     - name: Create artifact
       uses: actions/upload-artifact@v3
       with:
-        name: wheel-files-${{ env.PACKAGE_VERSION }}
+        name: wheel-files-${{ steps.set_version.outputs.package_version }}
         path: datascience_project/myfirst_project/dist/*.whl
 
   test:
@@ -61,12 +67,9 @@ jobs:
         python-version: '3.x'  # Specify the Python version you need
 
     - name: Download artifact
-      id: download_artifact
-      env:
-        PACKAGE_VERSION: ${{ needs.build.outputs.PACKAGE_VERSION }}
       uses: actions/download-artifact@v3
       with:
-        name: wheel-files-${{ env.PACKAGE_VERSION }}
+        name: wheel-files-${{ needs.build.outputs.PACKAGE_VERSION }}
         path: dist
 
     - name: List downloaded files
