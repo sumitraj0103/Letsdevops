@@ -95,3 +95,8 @@ pip show myfirst_project
 pip uninstall myfirst_project
 
 ```
+### Running the unit test
+```
+python -m unittest discover -s tests
+
+```
