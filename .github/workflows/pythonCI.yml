@@ -61,6 +61,9 @@ jobs:
         python-version: '3.x'  # Specify the Python version you need
 
     - name: Download artifact
+      id: download_artifact
+      env:
+        PACKAGE_VERSION: ${{ needs.build.outputs.PACKAGE_VERSION }}
       uses: actions/download-artifact@v3
       with:
         name: wheel-files-${{ env.PACKAGE_VERSION }}
