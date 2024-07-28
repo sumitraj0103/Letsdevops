@@ -40,18 +40,18 @@ jobs:
       env:
         PACKAGE_VERSION: ${{ steps.set_version.outputs.package_version }}
       run: |
-        cd my_project
+        cd datascience_project/ds_project
         python setup.py sdist bdist_wheel
 
     - name: List wheel files
       run: |
-        ls -al my_project/dist
+        ls -al datascience_project/ds_project/dist
 
     - name: Create artifact
       uses: actions/upload-artifact@v3
       with:
         name: wheel-files-${{ steps.set_version.outputs.package_version }}
-        path: my_project/dist/*.whl
+        path: datascience_project/ds_project/dist/*.whl
 
   test:
     runs-on: ubuntu-latest
