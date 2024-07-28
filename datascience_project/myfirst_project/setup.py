@@ -1,8 +1,9 @@
+import os
 from setuptools import setup, find_packages
 
 setup(
     name="myfirst_project",
-    version="0.2",
+    version = os.getenv('PACKAGE_VERSION', '0.0.1'),
     packages=find_packages(),
     install_requires=[
         # List your project dependencies here
