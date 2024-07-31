@@ -1,4 +1,4 @@
-# my_project/module1.py
+# ds_project/module1.py
 def hello_world():
     return "Hello, world! My name is Sumit@@@"
 
