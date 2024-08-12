@@ -17,9 +17,9 @@ During installation, make sure to check the box that says "Add Python to PATH".
 ## Create Project Structure
 
 ```
-myfirst_project/
+ds_project/
 │
-├── myfirst_project/
+├── ds_project/
 │   ├── __init__.py
 │   ├── module1.py
 │   └── module2.py
@@ -53,7 +53,7 @@ if __name__ == "__main__":
 from setuptools import setup, find_packages
 
 setup(
-    name="myfirst_project",
+    name="ds_project",
     version="0.1",
     packages=find_packages(),
     install_requires=[
