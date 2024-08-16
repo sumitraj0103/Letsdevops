@@ -25,7 +25,7 @@ variables:
 stages:
   - template: templates/CI-Build-template.yml # stage template reference
     parameters:
-      Buildtype: $(buildtype)
+      Buildtype: ${{ parameters.buildtype }}
 
   - template: templates/CD-Deploy-template.yml # stage template reference
     parameters:
