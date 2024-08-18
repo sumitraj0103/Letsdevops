@@ -1,0 +1,68 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: windows-latest
+
+stages:
+- stage: OpsManager_DT_QC
+  jobs:
+  - job: OpsManager_Deploy
+    steps:
+    - script: echo Hello, world!
+      displayName: 'Run a one-line script'
+
+    - script: |
+        echo Add other tasks to build, test, and deploy your project.
+        echo See https://aka.ms/yaml
+      displayName: 'Run a multi-line script'
+    - task: TerraformInstaller@1
+      inputs:
+        terraformVersion: 'latest'
+    - task: TerraformTaskV4@4
+      displayName: "OpsManager-Terraform Init"
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/opsmanager'
+        commandOptions: '-reconfigure -backend-config ..\backend-dt.conf'
+        backendServiceArm: 'SC-DevOps-Azure-QC-DT'
+        backendAzureRmResourceGroupName: 'rg-automation-qc-devtest'
+        backendAzureRmStorageAccountName: 'sttfstateqcdt02'
+        backendAzureRmContainerName: 'qcdt-tfstate'
+        backendAzureRmKey: 'terraform.tfstate'
+
+    - task: TerraformTaskV4@4
+      displayName: "OpsManager-Terraform Plan"
+      inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/opsmanager'
+        commandOptions: '-var-file .\non-prod.tfvars -lock=false'
+        environmentServiceNameAzureRM: 'SC-DevOps-Azure-QC-DT'
+    - task: TerraformTaskV4@4
+      displayName: "OpsManager-Terraform Apply"
+      #condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        workingDirectory: '$(System.DefaultWorkingDirectory)//opsmanager'
+        commandOptions: '-var-file .\non-prod.tfvars -lock=false'
+        environmentServiceNameAzureRM: 'SC-DevOps-Azure-QC-DT'
+
+- stage: ITSM_DT_QC
+  jobs:
+  - job: ITSM_Deploy
+    steps:
+    - script: echo Hello, world!
+      displayName: 'Run a one-line script'
+
+    - script: |
+        echo Add other tasks to build, test, and deploy your project.
+        echo See https://aka.ms/yaml
+      displayName: 'Run a multi-line script'

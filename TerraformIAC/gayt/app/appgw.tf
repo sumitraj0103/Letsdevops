@@ -1,0 +1,20 @@
+module "appservice" {
+    #source = "git::https://github.com/myorg/terraform-azure-storage-account.git"
+    source = "../common/modules/appgateway"
+    for_each = var.appgw
+    pubip_name            = each.value.pubip_name
+    resource_group_name   = each.value.resource_group_name
+    location              = each.value.location
+    appgw_name             = each.value.appgw_name
+    pubip_name            = each.value.pubip_name
+    gateway_ip_configuration_name   = each.value.gateway_ip_configuration_name
+    backend_address_pool_name              = each.value.backend_address_pool_name
+    http_setting_name             = each.value.http_setting_name  
+    listener_name            = each.value.listener_name
+    frontend_ip_configuration_name   = each.value.frontend_ip_configuration_name
+    frontend_port_name              = each.value.frontend_port_name
+    user_assigned_identity_id             = each.value.user_assigned_identity_id
+    cert_secret_id            = each.value.cert_secret_id
+    request_routing_rule_name   = each.value.request_routing_rule_name
+    http_setting_name              = each.value.http_setting_name
+}
