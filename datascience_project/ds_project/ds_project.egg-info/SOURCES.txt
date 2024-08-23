@@ -1,0 +1,10 @@
+setup.py
+ds_project/__init__.py
+ds_project/module1.py
+ds_project.egg-info/PKG-INFO
+ds_project.egg-info/SOURCES.txt
+ds_project.egg-info/dependency_links.txt
+ds_project.egg-info/entry_points.txt
+ds_project.egg-info/top_level.txt
+tests/__init__.py
+tests/test_module1.py

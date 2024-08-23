@@ -1,0 +1,54 @@
+# azure-pipelines.yml
+trigger:
+- main
+variables:
+  - group: databricks
+stages:
+- stage: Build
+  jobs:
+  - template: pipelines/build-publish.yml
+    parameters:
+      pythonVersion: '3.x'
+      wheelFile: 'dist/your_project_name-0.1-py3-none-any.whl'
+
+- stage: DeployDev
+  dependsOn: Build
+  variables:
+    ENV_NAME: 'dev'
+    DATABRICKS_URL: 'https://adb-3283027138596430.10.azuredatabricks.net'
+  jobs:
+  - template: pipelines/deploy-to-environment.yml
+    parameters:
+      environment: ${{ variables.ENV_NAME }}
+      url: ${{ variables.DATABRICKS_URL }}
+      databrickstoken: $(dev_databrickstoken)
+- stage: DeployStaging
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+  dependsOn: 
+   - Build
+   - DeployDev
+  variables:
+    ENV_NAME: 'staging'
+    DATABRICKS_URL: 'https://staging.databricks.com'
+  jobs:
+  - template: pipelines/deploy-to-environment.yml
+    parameters:
+      environment: ${{ variables.ENV_NAME }}
+      url: ${{ variables.Dev_DATABRICKS_URL }}
+      databrickstoken: $(dev_databrickstoken)
+
+- stage: DeployProd
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+  dependsOn: 
+     - Build
+     - DeployDev
+     - DeployStaging
+  variables:
+    ENV_NAME: 'prod'
+    DATABRICKS_URL: 'https://prod.databricks.com'
+  jobs:
+  - template: pipelines/deploy-to-environment.yml
+    parameters:
+      environment: ${{ variables.ENV_NAME }}
+      url: ${{ variables.DATABRICKS_URL }}
+      databrickstoken: $(dev_databrickstoken)

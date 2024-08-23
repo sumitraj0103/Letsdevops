@@ -1,0 +1,122 @@
+parameters:
+  - name: environment
+    type: string
+    default: 'development'
+  - name: url
+    type: string
+    default: 'https://adb-3283027138596430.10.azuredatabricks.net/'
+  - name: databrickstoken
+    type: string
+  - name: jobName
+    type: string
+    default: 'MyDatabricksJob'
+
+jobs:
+- job: DeployToEnvironment
+  pool:
+    vmImage: 'ubuntu-latest'
+  
+  steps:
+    - task: DownloadPipelineArtifact@2
+      condition: ne(variables['Build.SourceBranch'], 'refs/heads/main')
+      inputs:
+        artifactName: 'wheel'
+        targetPath: '$(Pipeline.Workspace)/wheel'
+      displayName: 'Download Wheel Artifact'
+    
+        # Download package v1
+    # Download a package from a package management feed in Azure Artifacts.
+    - task: DownloadPackage@1
+      condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+      inputs:
+        packageType: 'pypi' # 'maven' | 'npm' | 'nuget' | 'pypi' | 'upack' | 'cargo'. Required. Package Type. Default: nuget.
+        feed: 'f5f886a5-b48b-44d1-a083-66c04e100836/8a6887a4-6512-4b49-a26c-4278ac40e244'
+        #view: # string. View. 
+        definition: 'd3f55e8a-df72-4c25-9bd4-00254a7884ff'
+        version: 'latest'
+        downloadPath: '$(Pipeline.Workspace)/wheel' # string. Required. Destination directory. Default: $(System.ArtifactsDirectory).
+
+      
+    - script: |
+        # Find the wheel file in the downloaded artifact
+        echo "Finding the wheel file in the downloaded artifact..."
+        wheelFile=$(find $(Pipeline.Workspace)/wheel -name "*.whl" | head -n 1)
+        echo "Wheel file found: $wheelFile"
+        
+        if [ -z "$wheelFile" ]; then
+          echo "No wheel file found in the artifact"
+          exit 1
+        fi
+
+        # Extract just the file name from the path
+        wheelFileName=$(basename "$wheelFile")
+        echo "Wheel file name: $wheelFileName"
+
+        # Upload wheel file to Databricks
+        echo "Deploying to Databricks"
+        curl -n -X POST \
+          -H "Authorization: Bearer ${{ parameters.databrickstoken }}" \
+          -F "files=@$wheelFile" \
+          -F "path=dbfs:/FileStore/$wheelFileName" \
+          ${{ parameters.url }}/api/2.0/dbfs/put
+
+        # Find existing job ID
+        echo "Finding existing job ID"
+        job_id=$(curl -s -X GET \
+          -H "Authorization: Bearer ${{ parameters.databrickstoken }}" \
+          ${{ parameters.url }}/api/2.0/jobs/list | \
+          jq -r ".jobs[] | select(.settings.name == \"${{ parameters.jobName }}\") | .job_id")
+
+        if [ -z "$job_id" ]; then
+          echo "Job not found, creating new job"
+          job_id=$(curl -s -X POST \
+            -H "Authorization: Bearer ${{ parameters.databrickstoken }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "name": "'${{ parameters.jobName }}'",
+              "new_cluster": {
+                "spark_version": "14.3.x-scala2.12",
+                "node_type_id": "Standard_D3_v2",
+                "num_workers": 2
+              },
+              "libraries": [
+                {
+                  "whl": "dbfs:/FileStore/'${wheelFileName}'"
+                }
+              ],
+              "python_wheel_task": {
+                 "package_name": "ds_project",
+                 "entry_point": "hello-world"
+              }
+            }' \
+            ${{ parameters.url }}/api/2.0/jobs/create | jq -r ".job_id")
+          echo "New job created with ID $job_id"
+        else
+          echo "Job found, updating existing job with ID $job_id"
+          update_job_response=$(curl -s -X POST \
+            -H "Authorization: Bearer ${{ parameters.databrickstoken }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "job_id": '${job_id}',
+              "new_settings": {
+                "name": "'${{ parameters.jobName }}'",
+                "new_cluster": {
+                  "spark_version": "14.3.x-scala2.12",
+                  "node_type_id": "Standard_D3_v2",
+                  "num_workers": 2
+                },
+                "libraries": [
+                  {
+                    "whl": "dbfs:/FileStore/'${wheelFileName}'"
+                  }
+                ],
+                "python_wheel_task": {
+                  "package_name": "ds_project",
+                  "entry_point": "hello-world"
+                }
+              }
+            }' \
+            ${{ parameters.url }}/api/2.0/jobs/reset)
+          echo "Update job response: $update_job_response"
+        fi
+      displayName: 'Deploy Wheel to Databricks and Update Job'
