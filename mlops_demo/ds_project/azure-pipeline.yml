@@ -1,8 +1,8 @@
 # azure-pipelines.yml
 trigger:
 - main
-variables:
-  - group: databricks
+# variables:
+#   - group: databricks
 stages:
 - stage: Build
   jobs:
@@ -15,40 +15,41 @@ stages:
   dependsOn: Build
   variables:
     ENV_NAME: 'dev'
-    DATABRICKS_URL: 'https://adb-3283027138596430.10.azuredatabricks.net'
+    DATABRICKS_URL: 'https://adb-1881113908357048.8.azuredatabricks.net'
   jobs:
   - template: pipelines/deploy-to-environment.yml
     parameters:
       environment: ${{ variables.ENV_NAME }}
       url: ${{ variables.DATABRICKS_URL }}
-      databrickstoken: $(dev_databrickstoken)
-- stage: DeployStaging
-  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
-  dependsOn: 
-   - Build
-   - DeployDev
-  variables:
-    ENV_NAME: 'staging'
-    DATABRICKS_URL: 'https://staging.databricks.com'
-  jobs:
-  - template: pipelines/deploy-to-environment.yml
-    parameters:
-      environment: ${{ variables.ENV_NAME }}
-      url: ${{ variables.Dev_DATABRICKS_URL }}
       databrickstoken: $(dev_databrickstoken)
 
-- stage: DeployProd
-  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
-  dependsOn: 
-     - Build
-     - DeployDev
-     - DeployStaging
-  variables:
-    ENV_NAME: 'prod'
-    DATABRICKS_URL: 'https://prod.databricks.com'
-  jobs:
-  - template: pipelines/deploy-to-environment.yml
-    parameters:
-      environment: ${{ variables.ENV_NAME }}
-      url: ${{ variables.DATABRICKS_URL }}
-      databrickstoken: $(dev_databrickstoken)
+# - stage: DeployStaging
+#   condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+#   dependsOn: 
+#    - Build
+#    - DeployDev
+#   variables:
+#     ENV_NAME: 'staging'
+#     DATABRICKS_URL: 'https://staging.databricks.com'
+#   jobs:
+#   - template: pipelines/deploy-to-environment.yml
+#     parameters:
+#       environment: ${{ variables.ENV_NAME }}
+#       url: ${{ variables.Dev_DATABRICKS_URL }}
+#       databrickstoken: $(stage_databrickstoken)
+
+# - stage: DeployProd
+#   condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+#   dependsOn: 
+#      - Build
+#      - DeployDev
+#      - DeployStaging
+#   variables:
+#     ENV_NAME: 'prod'
+#     DATABRICKS_URL: 'https://prod.databricks.com'
+#   jobs:
+#   - template: pipelines/deploy-to-environment.yml
+#     parameters:
+#       environment: ${{ variables.ENV_NAME }}
+#       url: ${{ variables.DATABRICKS_URL }}
+#       databrickstoken: $(prod_databrickstoken)
