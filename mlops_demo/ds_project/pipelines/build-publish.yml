@@ -61,10 +61,6 @@ jobs:
     displayName: 'Install build and twine'
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
 
-  # - script: |
-  #    python -m build -w
-  #   displayName: 'Python build'
-
   - task: TwineAuthenticate@1
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
     inputs:
