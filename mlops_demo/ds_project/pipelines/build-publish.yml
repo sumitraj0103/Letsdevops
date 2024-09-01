@@ -75,16 +75,3 @@ jobs:
      python -m twine upload -r ds_project_feed --config-file $(PYPIRC_PATH) ds_project/dist/*.whl
     displayName: 'Upload to feed'
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
-  # - script: |
-  #       cd ds_project
-  #       pip install twine
-  #       # Replace <your_feed_name> with the actual feed name and ensure the URL is correct
-  #       twine upload --repository-url https://pkgs.dev.azure.com/kriesto/_packaging/ds_project_feed/pypi/upload dist/*
-  #   displayName: 'Publish to Artifact Feed'
-
-  # - task: NuGetCommand@2
-  #   inputs:
-  #     command: 'push'
-  #     packagesToPush: 'ds_project/dist/*.whl'  # Path to your built wheel package
-  #     publishFeed: 'ds_project_feed'  # Name of your Azure Artifacts feed
-  #     displayName: 'Publish Wheel Package to Azure Artifacts Feed'
