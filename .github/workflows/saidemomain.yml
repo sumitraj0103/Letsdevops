@@ -9,6 +9,7 @@ jobs: # Jobs under which it runs the Steps
       - name: Run a one-line script
         run: write-host Hello, world!
   Test:
+    needs: build
     runs-on: windows-latest #Runner Declaration
     steps: # Defined Steps
       - uses: actions/checkout@v2
