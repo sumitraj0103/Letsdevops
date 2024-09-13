@@ -1,7 +1,6 @@
 name: Application-CI-Demo11 #Name of the Workflow
-on: # Defined Event Trigger
-  push:
-    branches: [ Dev ]
+on:
+ workflow_dispatch
 jobs: # Jobs under which it runs the Steps
   build:
     runs-on: windows-latest #Runner Declaration
