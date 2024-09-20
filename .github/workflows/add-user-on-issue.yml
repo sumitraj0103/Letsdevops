@@ -31,7 +31,8 @@ jobs:
         with:
           github-token: ${{ secrets.PAT_ADD_COLLABORATOR }}
           script: |
-            const username = '${{ steps.extract.outputs.username }}';
+            //const username = '${{ steps.extract.outputs.username }}';
+            const username = 'swetavermasrs'
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             console.log(`${username} Extracted username .`);
