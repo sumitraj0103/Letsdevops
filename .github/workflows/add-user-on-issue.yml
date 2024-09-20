@@ -34,7 +34,9 @@ jobs:
             const username = '${{ steps.extract.outputs.username }}';
             const owner = context.repo.owner;
             const repo = context.repo.repo;
-
+            console.log(`${username} Extracted username .`);
+            console.log(`${owner} Extracted owner .`);
+            console.log(`${repo} Extracted repo .`);
             try {
               // Check if the user is already a collaborator
               await github.rest.repos.getCollaboratorPermissionLevel({
