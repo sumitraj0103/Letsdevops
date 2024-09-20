@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Add Collaborator
+    url: https://github.com/sumitraj0103/Letsdevops/issues/new?template=add-collaborator.md
+    about: Request to add a new collaborator to the repository
