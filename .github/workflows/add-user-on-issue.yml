@@ -1,0 +1,84 @@
+name: Add User on Issue
+
+# Trigger the workflow when a new issue is opened
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  # Grant the workflow necessary permissions
+  issues: write
+  administration: write
+
+jobs:
+  add_user:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Extract the username from the issue
+      - name: Extract Username
+        id: extract
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issueBody = context.payload.issue.body;
+            // Regex to find "@username" in the issue body
+            const regex = /@(\w+)/;
+            const match = issueBody.match(regex);
+            if (!match) {
+              throw new Error('No username found in the issue body. Please include "@username" to specify the user to add.');
+            }
+            return { username: match[1] };
+
+      # Step 2: Add the extracted user as a collaborator
+      - name: Add Collaborator
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const username = '${{ steps.extract.outputs.username }}';
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            // Check if the user is already a collaborator
+            try {
+              await github.rest.repos.getCollaboratorPermissionLevel({
+                owner,
+                repo,
+                username,
+              });
+              console.log(`${username} is already a collaborator.`);
+            } catch (error) {
+              if (error.status === 404) {
+                // If not a collaborator, add them
+                await github.rest.repos.addCollaborator({
+                  owner,
+                  repo,
+                  username,
+                  permission: 'push', // Options: pull, triage, push, maintain, admin
+                });
+                console.log(`${username} has been added as a collaborator.`);
+              } else {
+                throw error;
+              }
+            }
+
+      # Step 3: Comment on the issue to confirm
+      - name: Comment on Issue
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const username = '${{ steps.extract.outputs.username }}';
+            const issueNumber = context.issue.number;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            // Construct a confirmation message
+            const message = `✅ @${username} has been added as a collaborator to this repository.`;
+
+            // Post the comment
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: issueNumber,
+              body: message,
+            });
