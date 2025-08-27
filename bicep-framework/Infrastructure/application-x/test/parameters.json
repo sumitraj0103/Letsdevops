@@ -1,0 +1,26 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "East US"
+    },
+    "appName": {
+      "value": "app-x-xqcre"
+    },
+    "environment": {
+      "value": "test"
+    },
+    "suffix": {
+      "value": "001"
+    },
+    "tags": {
+      "value": {
+        "Environment": "test",
+        "Application": "app-x-xqcre",
+        "CostCenter": "IT",
+        "Owner": "QA Team"
+      }
+    }
+  }
+}

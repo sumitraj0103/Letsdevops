@@ -1,0 +1,55 @@
+parameters:
+  - name: azureSubscription
+    type: string
+  - name: resourceGroup
+    type: string
+  - name: environment
+    type: string
+  - name: environmentName
+    type: string
+    default: ''
+
+jobs:
+- deployment: DeployBicep
+  displayName: 'Deploy Bicep Template to ${{ parameters.environment }}'
+  pool:
+    vmImage: 'ubuntu-latest'
+  environment: ${{ parameters.environmentName }}
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - checkout: self
+          displayName: 'Checkout source code'
+        
+        - task: AzureCLI@2
+          displayName: 'Validate Bicep Template'
+          inputs:
+            azureSubscription: ${{ parameters.azureSubscription }}
+            scriptType: 'bash'
+            scriptLocation: 'inlineScript'
+            inlineScript: |
+              echo "Validating Bicep template for ${{ parameters.environment }} environment..."
+              az bicep build --file main.bicep
+              echo "Bicep template validation completed successfully"
+            workingDirectory: '$(Pipeline.Workspace)/s/Infrastructure/application-x/${{ parameters.environment }}'
+        
+        - task: AzureCLI@2
+          displayName: 'Deploy Bicep to ${{ parameters.environment }}'
+          inputs:
+            azureSubscription: ${{ parameters.azureSubscription }}
+            scriptType: 'bash'
+            scriptLocation: 'inlineScript'
+            inlineScript: |
+              echo "Starting deployment to ${{ parameters.environment }} environment..."
+              echo "Resource Group: ${{ parameters.resourceGroup }}"
+              
+              az deployment group create \
+                --resource-group ${{ parameters.resourceGroup }} \
+                --template-file main.bicep \
+                --parameters @parameters.json \
+                --mode Incremental \
+                --verbose
+              
+              echo "Deployment to ${{ parameters.environment }} completed successfully"
+            workingDirectory: '$(Pipeline.Workspace)/s/Infrastructure/application-x/${{ parameters.environment }}'

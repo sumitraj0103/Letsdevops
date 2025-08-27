@@ -1,0 +1,56 @@
+trigger:
+- main
+- develop
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+
+stages:
+- stage: DEV
+  displayName: 'Deploy to Dev'
+  jobs:
+  - template: templates/deploy-bicep-template.yml
+    parameters:
+      azureSubscription: 'msc-applicationX-dev'
+      resourceGroup: 'rg-applicationX-dev'
+      environment: 'dev'
+      environmentName: 'applicationX-dev'
+
+- stage: TEST
+  displayName: 'Deploy to Test'
+  dependsOn: DEV
+  condition: succeeded()
+  jobs:
+  - template: templates/deploy-bicep-template.yml
+    parameters:
+      azureSubscription: 'msc-applicationX-test'
+      resourceGroup: 'rg-applicationX-test'
+      environment: 'test'
+      environmentName: 'applicationX-test'
+
+- stage: STAGING
+  displayName: 'Deploy to Staging'
+  dependsOn: TEST
+  condition: succeeded()
+  jobs:
+  - template: templates/deploy-bicep-template.yml
+    parameters:
+      azureSubscription: 'msc-applicationX-staging'
+      resourceGroup: 'rg-applicationX-staging'
+      environment: 'staging'
+      environmentName: 'applicationX-staging'
+
+- stage: PROD
+  displayName: 'Deploy to Production'
+  dependsOn: STAGING
+  condition: succeeded()
+  jobs:
+  - template: templates/deploy-bicep-template.yml
+    parameters:
+      azureSubscription: 'msc-applicationX-prod'
+      resourceGroup: 'rg-applicationX-prod'
+      environment: 'prod'
+      environmentName: 'applicationX-prod'
