@@ -1,0 +1,105 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\sraj\\source\\repos\\MachineInventoryProcessor\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{3D59D616-5961-405D-94E4-AE3B73CEB7F6}|MachineInventoryProcessor\\MachineInventoryProcessor.csproj|c:\\users\\sraj\\source\\repos\\machineinventoryprocessor\\machineinventoryprocessor\\blobtriggerfunction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D59D616-5961-405D-94E4-AE3B73CEB7F6}|MachineInventoryProcessor\\MachineInventoryProcessor.csproj|solutionrelative:machineinventoryprocessor\\blobtriggerfunction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D59D616-5961-405D-94E4-AE3B73CEB7F6}|MachineInventoryProcessor\\MachineInventoryProcessor.csproj|c:\\users\\sraj\\source\\repos\\machineinventoryprocessor\\machineinventoryprocessor\\local.settings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{3D59D616-5961-405D-94E4-AE3B73CEB7F6}|MachineInventoryProcessor\\MachineInventoryProcessor.csproj|solutionrelative:machineinventoryprocessor\\local.settings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D59D616-5961-405D-94E4-AE3B73CEB7F6}|MachineInventoryProcessor\\MachineInventoryProcessor.csproj|c:\\users\\sraj\\source\\repos\\machineinventoryprocessor\\machineinventoryprocessor\\host.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{3D59D616-5961-405D-94E4-AE3B73CEB7F6}|MachineInventoryProcessor\\MachineInventoryProcessor.csproj|solutionrelative:machineinventoryprocessor\\host.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D59D616-5961-405D-94E4-AE3B73CEB7F6}|MachineInventoryProcessor\\MachineInventoryProcessor.csproj|c:\\users\\sraj\\source\\repos\\machineinventoryprocessor\\machineinventoryprocessor\\databaseservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D59D616-5961-405D-94E4-AE3B73CEB7F6}|MachineInventoryProcessor\\MachineInventoryProcessor.csproj|solutionrelative:machineinventoryprocessor\\databaseservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D59D616-5961-405D-94E4-AE3B73CEB7F6}|MachineInventoryProcessor\\MachineInventoryProcessor.csproj|c:\\users\\sraj\\source\\repos\\machineinventoryprocessor\\machineinventoryprocessor\\machineinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D59D616-5961-405D-94E4-AE3B73CEB7F6}|MachineInventoryProcessor\\MachineInventoryProcessor.csproj|solutionrelative:machineinventoryprocessor\\machineinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "host.json",
+              "DocumentMoniker": "C:\\Users\\sraj\\source\\repos\\MachineInventoryProcessor\\MachineInventoryProcessor\\host.json",
+              "RelativeDocumentMoniker": "MachineInventoryProcessor\\host.json",
+              "ToolTip": "C:\\Users\\sraj\\source\\repos\\MachineInventoryProcessor\\MachineInventoryProcessor\\host.json",
+              "RelativeToolTip": "MachineInventoryProcessor\\host.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-02-02T18:31:28.442Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "local.settings.json",
+              "DocumentMoniker": "C:\\Users\\sraj\\source\\repos\\MachineInventoryProcessor\\MachineInventoryProcessor\\local.settings.json",
+              "RelativeDocumentMoniker": "MachineInventoryProcessor\\local.settings.json",
+              "ToolTip": "C:\\Users\\sraj\\source\\repos\\MachineInventoryProcessor\\MachineInventoryProcessor\\local.settings.json",
+              "RelativeToolTip": "MachineInventoryProcessor\\local.settings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-02-02T18:30:52.436Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "DatabaseService.cs",
+              "DocumentMoniker": "C:\\Users\\sraj\\source\\repos\\MachineInventoryProcessor\\MachineInventoryProcessor\\DatabaseService.cs",
+              "RelativeDocumentMoniker": "MachineInventoryProcessor\\DatabaseService.cs",
+              "ToolTip": "C:\\Users\\sraj\\source\\repos\\MachineInventoryProcessor\\MachineInventoryProcessor\\DatabaseService.cs",
+              "RelativeToolTip": "MachineInventoryProcessor\\DatabaseService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-02T18:30:01.708Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "MachineInfo.cs",
+              "DocumentMoniker": "C:\\Users\\sraj\\source\\repos\\MachineInventoryProcessor\\MachineInventoryProcessor\\MachineInfo.cs",
+              "RelativeDocumentMoniker": "MachineInventoryProcessor\\MachineInfo.cs",
+              "ToolTip": "C:\\Users\\sraj\\source\\repos\\MachineInventoryProcessor\\MachineInventoryProcessor\\MachineInfo.cs",
+              "RelativeToolTip": "MachineInventoryProcessor\\MachineInfo.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-02T18:29:02.956Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "BlobTriggerFunction.cs",
+              "DocumentMoniker": "C:\\Users\\sraj\\source\\repos\\MachineInventoryProcessor\\MachineInventoryProcessor\\BlobTriggerFunction.cs",
+              "RelativeDocumentMoniker": "MachineInventoryProcessor\\BlobTriggerFunction.cs",
+              "ToolTip": "C:\\Users\\sraj\\source\\repos\\MachineInventoryProcessor\\MachineInventoryProcessor\\BlobTriggerFunction.cs",
+              "RelativeToolTip": "MachineInventoryProcessor\\BlobTriggerFunction.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAFAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-02T18:26:31.856Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
