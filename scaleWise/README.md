@@ -5,7 +5,7 @@ languages:
 products:
 - azure
 - azure-powershell
-- azure-resource-manager-templates
+- bicep
 - azure-app-service-plans
 - azure-function-apps
 - azure-app-insights
@@ -31,16 +31,12 @@ This project was born out of the customer need to save money, and a gap in Azure
 
 | File/folder       | Description                                |
 |-------------------|--------------------------------------------|
-| `arm-templates/`   | ScaleWise Infrastructure ARM Template.      |
+| `bicep-templates/`   | ScaleWise Infrastructure bicep Template.      |
 | `azure-functions/` | ScaleWise project Azure Functions. Includes Engine and Trigger.|
-| `docs/`            | Docsify repo for web documentation.|
 | `.gitignore`      | Define what to ignore at commit time.      |
 | `deploy.ps1`      | PowerShell script to deploy tool.          |
 | `README.md`       | This README file.                          |
 | `teardown.ps1`    | PowerShell script to decommission the tool. Makes testing and experimentation easy.|
-| `CHANGELOG.md`    | List of changes to the sample. COMING SOON!|
-| `CONTRIBUTING.md` | Guidelines for contributing to the sample. COMING SOON!|
-| `LICENSE`         | The license for the sample. COMING SOON!   |
 
 
 ## ScaleWise Architecture and Workflow
