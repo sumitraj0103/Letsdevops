@@ -66,8 +66,8 @@ The deployment script will ask the user to input a unique name for their deploym
 Example:
 ```
 PS /User/git_repos/github/azure-autoscale> ./deploy.ps1
-Enter a unique name for your deployment: tjptest
-Enter Azure Region to deploy to: westus
+Enter a unique name for your deployment: srstest
+Enter Azure Region to deploy to: westeurope
 ```
 
 ### Steps to tear down the deployment:
@@ -137,6 +137,4 @@ We would like this to become a SaaS/PaaS product that will help to keep our cust
 Matt, Nills, and Tyler are Cloud Solutions Architects at Microsoft, and are always looking for interesting ways to help our customers solve problems!
 
 **Want to know more about ScaleWise??**
-
-## Contributing
 
