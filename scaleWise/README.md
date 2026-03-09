@@ -1,40 +1,17 @@
----
-page_type: sample
-languages:
-- powershell
-products:
-- azure
-- azure-powershell
-- bicep
-- azure-app-service-plans
-- azure-function-apps
-- azure-app-insights
-description: "ScaleWise allows a user to 'hop' between service tiers, like a traditional ScaleWise helps you move between floors."
----
+# scaleWise
+scaleWise is a serverless Azure solution that automatically right-sizes your cloud resources based on a schedule — helping Dev/Test teams cut costs during off-hours without any manual effort.
 
-# ScaleWise
-
-ScaleWise automatically right-sizes your Azure resources based on business hours, cutting idle costs without any manual effort
-
-<!-- 
-Guidelines on README format: https://review.docs.microsoft.com/help/onboard/admin/samples/concepts/readme-template?branch=master
-
-Guidance on onboarding samples to docs.microsoft.com/samples: https://review.docs.microsoft.com/help/onboard/admin/samples/process/onboarding?branch=master
-
-Taxonomies for products and languages: https://review.docs.microsoft.com/new-hope/information-architecture/metadata/taxonomies?branch=master
--->
-
-caleWise is a serverless Azure solution that automatically right-sizes your cloud resources based on a schedule — helping Dev/Test teams cut costs during off-hours without any manual effort.
-
-Why ScaleWise?
+Why scaleWise?
 
 Azure lacks a native way to easily "turn down" managed services between service tiers on a schedule
 Dev/Test environments often run at full capacity overnight and on weekends — wasting budget
 ScaleWise fills that gap with a lightweight, tag-driven automation built entirely on Azure Functions
-How it works:
+
+## How it works:
 
 Engine Function (C#) — runs every 5 minutes, queries Azure Resource Graph for resources tagged with resize-Enable = True, evaluates the configured schedule, and posts scale instructions to a Storage Queue
 Scaler-Trigger Function (PowerShell) — listens to the queue and processes each scale request using resource-specific scaler modules
+
 Scaler Modules — pluggable PowerShell modules, one per resource type, that handle the actual scaling API calls
 To use ScaleWise, simply tag your Azure resources with the required tags and ScaleWise handles the rest — scaling down during off-hours and restoring the original tier when the window ends.
 
