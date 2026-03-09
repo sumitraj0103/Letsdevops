@@ -41,7 +41,8 @@ This project was born out of the customer need to save money, and a gap in Azure
 
 ## ScaleWise Architecture and Workflow
 
-![ScaleWise Architecture](./docs/images/ScaleWise.png)
+<img width="684" height="332" alt="image" src="https://github.com/user-attachments/assets/a6116d1e-b69d-4ab5-a559-f2ec0574f1da" />
+
 
 
 ## Prerequisites
